@@ -100,22 +100,6 @@ testfile3`
     )
   })
 
-  //   it("can add to empty topic at", async () => {
-  //     const ignoreFileContent = await addToIgnoreFile(
-  //       `# testtopic2
-  // testfile1
-
-  // `,
-  //       "testtopic2",
-  //       "testfile2"
-  //     )
-  //     expect(ignoreFileContent).toBe(`# testtopic2
-  // testfile1
-  // testfile2
-
-  // `)
-  //   })
-
   it("can add to topic at end of file", async () => {
     const ignoreFileContent = await addToIgnoreFile(
       `# testtopic2
