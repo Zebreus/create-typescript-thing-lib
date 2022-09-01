@@ -1,0 +1,15 @@
+{
+  "name": "create-typescript-thing-lib",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "description": "The functions to actually create a typescript thing",
+  "author": {
+    "name": "Zebreus",
+    "email": "lennarteichhorn@googlemail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Zebreus/create-typescript-thing-lib"
+  }
+}
