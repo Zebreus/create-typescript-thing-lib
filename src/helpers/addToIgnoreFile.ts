@@ -1,14 +1,16 @@
-export const addToIgnoreFile = async (file: string, topic: string, value: string) => {
-  const lines = file ? file.split("\n") : []
+export const addToIgnoreFile = async (fileContent: string, topic: string, entry: string) => {
+  const lines = fileContent ? fileContent.split("\n") : []
 
-  if (lines.find(line => line.trim() === value)) {
-    return file
+  // Entry already exists
+  if (lines.find(line => line.trim() === entry)) {
+    return fileContent
   }
 
   const topicStartIndex = lines.findIndex(line => line.trim() === `# ${topic}`)
 
+  // New topic
   if (topicStartIndex === -1) {
-    return lines.concat([`# ${topic}`, value]).join("\n")
+    return lines.concat([`# ${topic}`, entry]).join("\n")
   }
 
   const topicLength = lines.slice(topicStartIndex + 1).findIndex(line => line.trim().startsWith(`# `))
@@ -29,7 +31,7 @@ export const addToIgnoreFile = async (file: string, topic: string, value: string
 
   const newEntryPosition = topicStartIndex + topicLines.length - emptyLinesAfterLastEntry.emptyLines
 
-  const newLines = lines.flatMap((line, index) => (index === newEntryPosition ? [line, value] : [line]))
+  const newLines = lines.flatMap((line, index) => (index === newEntryPosition ? [line, entry] : [line]))
 
   return newLines.join("\n")
 }
