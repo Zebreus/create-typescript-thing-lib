@@ -1,5 +1,5 @@
 import fs from "fs"
-import { addToIgnoreFile } from "helpers/addToIgnoreFile"
+import { addToGitIgnore } from "helpers/addToGitIgnore"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { loadExistingFile } from "helpers/loadExistingFile"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
@@ -31,9 +31,7 @@ export const initializeProject = async (
 
   await writeAndAddFile(targetDir, "package.json", JSON.stringify(packageJson, null, 2))
 
-  const gitIgnoreContent = (await loadExistingFile(targetDir, ".gitignore")) || ""
-  const newGitIgnoreContent = addToIgnoreFile(gitIgnoreContent, "node", "node_modules")
-  await writeAndAddFile(targetDir, ".gitignore", JSON.stringify(newGitIgnoreContent, null, 2))
+  await addToGitIgnore(targetDir, "node", "node_modules")
 
   await commitWithAuthor(targetDir, "Initialize node project")
 }

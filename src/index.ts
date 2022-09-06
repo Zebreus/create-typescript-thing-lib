@@ -2,6 +2,7 @@ import { ensureGitRepo } from "helpers/ensureGitRepo"
 import { prepareTargetDir } from "helpers/prepareTargetDir"
 import { normalize, resolve } from "path"
 import { addNixShell } from "steps/addNixShell"
+import { addTypescript } from "steps/addTypescript"
 import { initializeProject } from "steps/initializeProject"
 
 export type Options = {
@@ -32,6 +33,7 @@ export const createTypescriptThing = async ({
   await ensureGitRepo(targetDir, repo, branch)
   await addNixShell(targetDir)
   await initializeProject(targetDir, name, "0.0.0", description, authorName, authorEmail, "MIT")
+  await addTypescript(targetDir)
 }
 
 export default createTypescriptThing
