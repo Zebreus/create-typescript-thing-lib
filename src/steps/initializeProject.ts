@@ -1,8 +1,9 @@
 import fs from "fs"
 import { addToIgnoreFile } from "helpers/addToIgnoreFile"
+import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { loadExistingFile } from "helpers/loadExistingFile"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
-import { commit, findRoot, listRemotes } from "isomorphic-git"
+import { findRoot, listRemotes } from "isomorphic-git"
 import { normalize, relative, resolve } from "path"
 import { PackageJson } from "types-package-json"
 
@@ -34,7 +35,7 @@ export const initializeProject = async (
   const newGitIgnoreContent = addToIgnoreFile(gitIgnoreContent, "node", "node_modules")
   await writeAndAddFile(targetDir, ".gitignore", JSON.stringify(newGitIgnoreContent, null, 2))
 
-  await commit({ fs, dir: targetDir, message: "Add nix shell" })
+  await commitWithAuthor(targetDir, "Initialize node project")
 }
 
 const getRepositoryInformation = async (targetDir: string) => {
