@@ -10,7 +10,6 @@ export const addTypescript = async (targetDir: string) => {
 
   const tsConfigObject = {
     compilerOptions: {
-      incremental: true,
       target: "es2016",
       lib: ["es2016", "esnext"],
       jsx: "preserve",
