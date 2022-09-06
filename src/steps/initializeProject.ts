@@ -31,7 +31,7 @@ export const initializeProject = async (
 
   await writeAndAddFile(targetDir, "package.json", JSON.stringify(packageJson, null, 2))
 
-  await addToGitIgnore(targetDir, "node", "node_modules")
+  await addToGitIgnore(targetDir, "node", ["node_modules", "yarn-error.log"])
 
   await commitWithAuthor(targetDir, "Initialize node project")
 }
