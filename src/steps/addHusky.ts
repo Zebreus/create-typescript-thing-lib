@@ -14,7 +14,8 @@ export const addHusky = async (targetDir: string) => {
     `#!/usr/bin/env sh
   . "$(dirname -- "$0")/_/husky.sh"
   
-  FORCE_COLOR=1 yarn lint-staged -c .lintstagedrc.json`
+  FORCE_COLOR=1 yarn lint-staged -c .lintstagedrc.json`,
+    { executable: true }
   )
 
   const prettierRcObject = {
