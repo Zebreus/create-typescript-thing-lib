@@ -15,7 +15,7 @@ export const setupLibrary = async (targetDir: string) => {
     "package.json",
     packageJson => ({
       ...packageJson,
-      files: [...new Set([...(packageJson.files || []), "dist"])],
+      files: [...new Set([...(packageJson.files || []), "dist/**"])],
       keywords: [...new Set([...(packageJson.keywords || []), "library"])],
       main: "dist/index.js",
     })

@@ -10,6 +10,7 @@ import { addPrettier } from "steps/addPrettier"
 import { addTypescript } from "steps/addTypescript"
 import { addVscodeSettings } from "steps/addVscodeSettings"
 import { initializeProject } from "steps/initializeProject"
+import { setupApplication } from "steps/setupApplication"
 import { setupLibrary } from "steps/setupLibrary"
 
 export type Options = {
@@ -49,6 +50,9 @@ export const createTypescriptThing = async ({
   await addVscodeSettings(targetDir)
   if (type === "library") {
     await setupLibrary(targetDir)
+  }
+  if (type === "application") {
+    await setupApplication(targetDir, name)
   }
 }
 
