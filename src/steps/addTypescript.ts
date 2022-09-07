@@ -34,8 +34,17 @@ export const addTypescript = async (targetDir: string) => {
     },
     include: ["src/**/*"],
   }
-
   await writeAndAddFile(targetDir, "tsconfig.json", JSON.stringify(tsConfigObject, null, 2))
+
+  const tsConfigBuildObject = {
+    extends: "./tsconfig.json",
+    compilerOptions: {
+      noEmit: false,
+      sourceMap: false,
+      declarationMap: false,
+    },
+  }
+  await writeAndAddFile(targetDir, "tsconfig.build.json", JSON.stringify(tsConfigBuildObject, null, 2))
 
   await addToGitIgnore(targetDir, "typescript", ["*.tsbuildinfo", "dist/"])
 
