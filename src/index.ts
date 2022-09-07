@@ -2,6 +2,7 @@ import { ensureGitRepo } from "helpers/ensureGitRepo"
 import { prepareTargetDir } from "helpers/prepareTargetDir"
 import { normalize, resolve } from "path"
 import { addEslint } from "steps/addEslint"
+import { addHusky } from "steps/addHusky"
 import { addLintStaged } from "steps/addLintStaged"
 import { addNixShell } from "steps/addNixShell"
 import { addPrettier } from "steps/addPrettier"
@@ -40,6 +41,7 @@ export const createTypescriptThing = async ({
   await addPrettier(targetDir)
   await addEslint(targetDir)
   await addLintStaged(targetDir)
+  await addHusky(targetDir)
 }
 
 export default createTypescriptThing
