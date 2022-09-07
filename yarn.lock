@@ -3550,6 +3550,11 @@ eslint@^8.23.0:
     strip-json-comments "^3.1.0"
     text-table "^0.2.0"
 
+eslintrc-type@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/eslintrc-type/-/eslintrc-type-1.1.0.tgz#110403d617d8df2453aefed14b8c7341cf4c3acb"
+  integrity sha512-DMd7iAZs5cMu20m8+ZQPiuDqVQV3KuVJHzY1MDaDgcogbWzuG1dcCMO2PFwJYuiKv5Yy9o4myPUjbvdJ9JaOLw==
+
 espree@^9.4.0:
   version "9.4.0"
   resolved "https://registry.yarnpkg.com/espree/-/espree-9.4.0.tgz#cd4bc3d6e9336c433265fc0aa016fc1aaf182f8a"
@@ -7130,6 +7135,11 @@ tsconfig-paths@^3.14.1:
     json5 "^1.0.1"
     minimist "^1.2.6"
     strip-bom "^3.0.0"
+
+tsconfig-type@^1.27.0:
+  version "1.27.0"
+  resolved "https://registry.yarnpkg.com/tsconfig-type/-/tsconfig-type-1.27.0.tgz#968d6d079c3fcaf1f635d798a8efc929bdc625de"
+  integrity sha512-AqaCPWKadRpUurdA+e23LJ5R3ZSMWb0ph3HOZzUMIzaBLID9zprcXISWJvBUVNRKSxIoa7fVVWkinv2sFg7/+Q==
 
 tslib@^1.13.0, tslib@^1.8.1:
   version "1.14.1"
