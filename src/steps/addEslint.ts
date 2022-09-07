@@ -1,23 +1,19 @@
-import { addPackageJsonToGit } from "helpers/addPackageJsonToGit"
 import { addScriptToPackage } from "helpers/addScriptToPackage"
 import { addToGitIgnore } from "helpers/addToGitIgnore"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
+import { installPackage } from "helpers/installPackage"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
-import { installPackagePnpm } from "install-pnpm-package"
+import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 
-export const addEslint = async (targetDir: string) => {
-  await installPackagePnpm(
-    [
-      "eslint",
-      "@types/eslint",
-      "@typescript-eslint/eslint-plugin@latest",
-      "@typescript-eslint/parser@latest",
-      "eslint-plugin-import@latest",
-      "eslint-import-resolver-typescript@latest",
-    ],
-    { directory: targetDir, type: "dev" }
-  )
-  await addPackageJsonToGit(targetDir)
+export const addEslint = async (targetDir: string, packageManager: PackageManager) => {
+  await installPackage(targetDir, packageManager, [
+    "eslint",
+    "@types/eslint",
+    "@typescript-eslint/eslint-plugin@latest",
+    "@typescript-eslint/parser@latest",
+    "eslint-plugin-import@latest",
+    "eslint-import-resolver-typescript@latest",
+  ])
 
   const eslintRcObject = {
     extends: [

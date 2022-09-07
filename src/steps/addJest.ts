@@ -1,19 +1,15 @@
 import { Eslintrc } from "eslintrc-type"
 import { addCommonJsExportFile } from "helpers/addJsExportFile"
-import { addPackageJsonToGit } from "helpers/addPackageJsonToGit"
 import { addScriptToPackage } from "helpers/addScriptToPackage"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
+import { installPackage } from "helpers/installPackage"
 import { modifyJsonConfig as modifyJsonFile } from "helpers/modifyJsonFile"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
-import { installPackagePnpm } from "install-pnpm-package"
+import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 import { Tsconfig } from "tsconfig-type"
 
-export const addJest = async (targetDir: string) => {
-  await installPackagePnpm(["jest", "@types/jest", "ts-jest", "ts-node", "eslint-plugin-jest"], {
-    directory: targetDir,
-    type: "dev",
-  })
-  await addPackageJsonToGit(targetDir)
+export const addJest = async (targetDir: string, packageManager: PackageManager) => {
+  await installPackage(targetDir, packageManager, ["jest", "@types/jest", "ts-jest", "ts-node", "eslint-plugin-jest"])
 
   const jestConfigObject = {
     roots: ["<rootDir>/src"],

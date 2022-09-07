@@ -1,14 +1,13 @@
-import { addPackageJsonToGit } from "helpers/addPackageJsonToGit"
 import { appendScriptToPackage } from "helpers/addScriptToPackage"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
+import { installPackage } from "helpers/installPackage"
 import { modifyJsonConfig } from "helpers/modifyJsonFile"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
-import { installPackagePnpm } from "install-pnpm-package"
+import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 import { PackageJson } from "types-package-json"
 
-export const setupLibrary = async (targetDir: string) => {
-  await installPackagePnpm(["resolve-tspaths"], { directory: targetDir, type: "dev" })
-  await addPackageJsonToGit(targetDir)
+export const setupLibrary = async (targetDir: string, packageManager: PackageManager) => {
+  await installPackage(targetDir, packageManager, ["resolve-tspaths"])
 
   await modifyJsonConfig<Omit<PackageJson, "keywords"> & { keywords?: string[] }>(
     targetDir,

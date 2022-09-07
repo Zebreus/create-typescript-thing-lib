@@ -1,12 +1,11 @@
-import { addPackageJsonToGit } from "helpers/addPackageJsonToGit"
 import { addScriptToPackage } from "helpers/addScriptToPackage"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
+import { installPackage } from "helpers/installPackage"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
-import { installPackagePnpm } from "install-pnpm-package"
+import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 
-export const addHusky = async (targetDir: string) => {
-  await installPackagePnpm(["husky", "pinst"], { directory: targetDir, type: "dev" })
-  await addPackageJsonToGit(targetDir)
+export const addHusky = async (targetDir: string, packageManager: PackageManager) => {
+  await installPackage(targetDir, packageManager, ["husky", "pinst"])
 
   await writeAndAddFile(
     targetDir,

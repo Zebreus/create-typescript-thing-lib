@@ -1,12 +1,11 @@
-import { addPackageJsonToGit } from "helpers/addPackageJsonToGit"
 import { addScriptToPackage } from "helpers/addScriptToPackage"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
+import { installPackage } from "helpers/installPackage"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
-import { installPackagePnpm } from "install-pnpm-package"
+import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 
-export const addPrettier = async (targetDir: string) => {
-  await installPackagePnpm(["prettier", "prettier-plugin-organize-imports"], { directory: targetDir, type: "dev" })
-  await addPackageJsonToGit(targetDir)
+export const addPrettier = async (targetDir: string, packageManager: PackageManager) => {
+  await installPackage(targetDir, packageManager, ["prettier", "prettier-plugin-organize-imports"])
 
   const prettierRcObject = {
     arrowParens: "avoid",

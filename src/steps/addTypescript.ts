@@ -1,12 +1,11 @@
-import { addPackageJsonToGit } from "helpers/addPackageJsonToGit"
 import { addToGitIgnore } from "helpers/addToGitIgnore"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
+import { installPackage } from "helpers/installPackage"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
-import { installPackagePnpm } from "install-pnpm-package"
+import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 
-export const addTypescript = async (targetDir: string) => {
-  await installPackagePnpm(["typescript", "@types/node"], { directory: targetDir, type: "dev" })
-  await addPackageJsonToGit(targetDir)
+export const addTypescript = async (targetDir: string, packageManager: PackageManager) => {
+  await installPackage(targetDir, packageManager, ["typescript", "@types/node"])
 
   const tsConfigObject = {
     compilerOptions: {

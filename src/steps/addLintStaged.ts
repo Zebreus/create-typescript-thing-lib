@@ -1,11 +1,10 @@
-import { addPackageJsonToGit } from "helpers/addPackageJsonToGit"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
+import { installPackage } from "helpers/installPackage"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
-import { installPackagePnpm } from "install-pnpm-package"
+import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 
-export const addLintStaged = async (targetDir: string) => {
-  await installPackagePnpm(["lint-staged", "tsc-files"], { directory: targetDir, type: "dev" })
-  await addPackageJsonToGit(targetDir)
+export const addLintStaged = async (targetDir: string, packageManager: PackageManager) => {
+  await installPackage(targetDir, packageManager, ["lint-staged", "tsc-files"])
 
   const lintStagedRcObject = {
     "*.+(ts|tsx)": ["prettier --write", "eslint --cache --fix", "tsc-files --noEmit"],

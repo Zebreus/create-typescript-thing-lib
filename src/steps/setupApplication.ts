@@ -1,14 +1,13 @@
-import { addPackageJsonToGit } from "helpers/addPackageJsonToGit"
 import { addScriptToPackage, appendScriptToPackage } from "helpers/addScriptToPackage"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
+import { installPackage } from "helpers/installPackage"
 import { modifyJsonConfig } from "helpers/modifyJsonFile"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
-import { installPackagePnpm } from "install-pnpm-package"
+import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 import { PackageJson } from "types-package-json"
 
-export const setupApplication = async (targetDir: string, name: string) => {
-  await installPackagePnpm(["@vercel/ncc"], { directory: targetDir, type: "dev" })
-  await addPackageJsonToGit(targetDir)
+export const setupApplication = async (targetDir: string, packageManager: PackageManager, name: string) => {
+  await installPackage(targetDir, packageManager, ["@vercel/ncc"])
 
   await modifyJsonConfig<Omit<PackageJson, "keywords"> & { keywords?: string[] }>(
     targetDir,
