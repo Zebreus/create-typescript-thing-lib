@@ -28,7 +28,7 @@ export const addJest = async (targetDir: string, packageManager: PackageManager)
 
   await writeAndAddFile(targetDir, "src/tests/example.test.ts", generateExampleTest())
 
-  await modifyJsonFile<Tsconfig>(targetDir, "tsconfig.json", tsConfig => ({
+  await modifyJsonFile<Tsconfig>(targetDir, "tsconfig.build.json", tsConfig => ({
     ...tsConfig,
     exclude: [...new Set([...(tsConfig.exclude || []), "src/tests", "src/**/*.test.ts"])],
   }))
@@ -64,6 +64,7 @@ const generateExampleTest = () => {
         })
       })
       
+      // eslint-disable-next-line jest/no-export
       export {}
     `
 }
