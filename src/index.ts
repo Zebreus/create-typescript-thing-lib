@@ -3,12 +3,14 @@ import { prepareTargetDir } from "helpers/prepareTargetDir"
 import { normalize, resolve } from "path"
 import { addEslint } from "steps/addEslint"
 import { addHusky } from "steps/addHusky"
+import { addJest } from "steps/addJest"
 import { addLintStaged } from "steps/addLintStaged"
 import { addNixShell } from "steps/addNixShell"
 import { addPrettier } from "steps/addPrettier"
 import { addTypescript } from "steps/addTypescript"
 import { addVscodeSettings } from "steps/addVscodeSettings"
 import { initializeProject } from "steps/initializeProject"
+import { setupLibrary } from "steps/setupLibrary"
 
 export type Options = {
   path: string
@@ -26,7 +28,7 @@ export const createTypescriptThing = async ({
   path,
   name,
   description,
-  //   type,
+  type,
   //   monorepo = false,
   repo,
   branch = "main",
@@ -41,9 +43,13 @@ export const createTypescriptThing = async ({
   await addTypescript(targetDir)
   await addPrettier(targetDir)
   await addEslint(targetDir)
+  await addJest(targetDir)
   await addLintStaged(targetDir)
   await addHusky(targetDir)
   await addVscodeSettings(targetDir)
+  if (type === "library") {
+    await setupLibrary(targetDir)
+  }
 }
 
 export default createTypescriptThing
