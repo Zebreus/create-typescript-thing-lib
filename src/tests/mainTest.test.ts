@@ -61,6 +61,16 @@ describe("Some tests", () => {
     })
   }, 120000)
 
+  it("Creates a lint-staged config file", async () => {
+    await runInDirectory(async dir => {
+      await createTypescriptThing({ path: dir, name: "test", type: "library", monorepo: false, repo: "test.com" })
+      const fileJson = await loadExistingFile(dir, ".lintstagedrc.json")
+      expect(fileJson).toBeTruthy()
+      const fileObject = JSON.parse(fileJson || "")
+      expect(typeof fileObject).toBe("object")
+    })
+  }, 120000)
+
   it("Launches something and I can use the debugger", async () => {
     await runInDirectory(async dir => {
       await createTypescriptThing({ path: dir, name: "test", type: "library", monorepo: false, repo: "test.com" })
