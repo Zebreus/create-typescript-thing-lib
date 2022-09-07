@@ -45,7 +45,7 @@ export const createTypescriptThing = async ({
   const targetDir = normalize(resolve(process.cwd(), path || name || "."))
   await prepareTargetDir(targetDir)
   await ensureGitRepo(targetDir, repo, branch)
-  await addNixShell(targetDir)
+  await addNixShell(targetDir, packageManager)
   await initializeProject(targetDir, name, "0.0.0", description, authorName, authorEmail, "MIT")
   await addTypescript(targetDir, packageManager)
   await addPrettier(targetDir, packageManager)
