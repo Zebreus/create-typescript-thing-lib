@@ -6,7 +6,7 @@ export const commitWithAuthor = async (targetDir: string, message: string) => {
     fs,
     dir: targetDir,
     message: message,
-    author: { name: "Zebreus", email: "lennart@madmanfred.com" },
-    committer: { name: "Zebreus", email: "lennart@madmanfred.com" },
+    author: { name: "Zebreus", email: "zebreus@madmanfred.com" },
+    committer: { name: "Zebreus", email: "zebreus@madmanfred.com" },
   })
 }
