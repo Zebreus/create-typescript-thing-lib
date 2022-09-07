@@ -7,6 +7,7 @@ import { addLintStaged } from "steps/addLintStaged"
 import { addNixShell } from "steps/addNixShell"
 import { addPrettier } from "steps/addPrettier"
 import { addTypescript } from "steps/addTypescript"
+import { addVscodeSettings } from "steps/addVscodeSettings"
 import { initializeProject } from "steps/initializeProject"
 
 export type Options = {
@@ -42,6 +43,7 @@ export const createTypescriptThing = async ({
   await addEslint(targetDir)
   await addLintStaged(targetDir)
   await addHusky(targetDir)
+  await addVscodeSettings(targetDir)
 }
 
 export default createTypescriptThing
