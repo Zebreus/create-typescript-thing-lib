@@ -21,6 +21,36 @@ describe("Some tests", () => {
     })
   }, 120000)
 
+  it("Creates a typescript project file", async () => {
+    await runInDirectory(async dir => {
+      await createTypescriptThing({ path: dir, name: "test", type: "library", monorepo: false, repo: "test.com" })
+      const fileJson = await loadExistingFile(dir, "tsconfig.json")
+      expect(fileJson).toBeTruthy()
+      const fileObject = JSON.parse(fileJson || "")
+      expect(typeof fileObject.compilerOptions).toBe("object")
+    })
+  }, 120000)
+
+  it("Creates a prettier config file", async () => {
+    await runInDirectory(async dir => {
+      await createTypescriptThing({ path: dir, name: "test", type: "library", monorepo: false, repo: "test.com" })
+      const fileJson = await loadExistingFile(dir, ".prettierrc.json")
+      expect(fileJson).toBeTruthy()
+      const fileObject = JSON.parse(fileJson || "")
+      expect(typeof fileObject).toBe("object")
+    })
+  }, 120000)
+
+  it("Creates an eslint config file", async () => {
+    await runInDirectory(async dir => {
+      await createTypescriptThing({ path: dir, name: "test", type: "library", monorepo: false, repo: "test.com" })
+      const fileJson = await loadExistingFile(dir, ".eslintrc.json")
+      expect(fileJson).toBeTruthy()
+      const fileObject = JSON.parse(fileJson || "")
+      expect(typeof fileObject).toBe("object")
+    })
+  }, 120000)
+
   it("Launches something and I can use the debugger", async () => {
     await runInDirectory(async dir => {
       await createTypescriptThing({ path: dir, name: "test", type: "library", monorepo: false, repo: "test.com" })
