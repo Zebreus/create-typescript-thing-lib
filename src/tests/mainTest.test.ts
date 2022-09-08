@@ -97,13 +97,11 @@ describe("The generated project seems to work", () => {
   }, 120000)
 
   it("The files in the generated project are formatted correctly", async () => {
-    // await sh(`cd '${dir}' && $(npm bin)/prettier . --write`)
     const prettierPromise = sh(`cd '${dir}' && $(npm bin)/prettier . --check`)
     await expect(prettierPromise).resolves.toBeTruthy()
   }, 120000)
 
   it("The files in the generated project pass eslint", async () => {
-    // await sh(`cd '${dir}' && $(npm bin)/prettier . --write`)
     const eslintPromise = sh(`cd '${dir}' && $(npm bin)/eslint src`)
     await expect(eslintPromise).resolves.toBeTruthy()
   }, 120000)

@@ -1,5 +1,6 @@
 import fs from "fs"
 import { access, chmod, mkdir, writeFile } from "fs/promises"
+import { formatFileContent } from "helpers/formatFileContent"
 import { add } from "isomorphic-git"
 import { dirname, relative, resolve } from "path"
 
@@ -18,7 +19,9 @@ export const writeAndAddFile = async (
     await mkdir(dir, { recursive: true })
   }
 
-  await writeFile(targetFile, content)
+  const formattedContent = await formatFileContent(content, file)
+
+  await writeFile(targetFile, formattedContent)
 
   if (options?.executable) {
     await chmod(targetFile, 0o755)
