@@ -43,30 +43,37 @@ export type Options = {
 export const createTypescriptThing = async (options: Options) => {
   const { name, description, type, gitOrigin, gitBranch = "main", authorName, authorEmail } = options
   const config = await generateConfig(options)
-  await prepareTargetDir(config)
-  await ensureGitRepo(config, gitOrigin, gitBranch)
-  await addNixShell(config)
-  await initializeProject(config, name, "0.0.0", description, authorName, authorEmail, "MIT")
-  await addTypescript(config)
-  await addPrettier(config)
-  await addEslint(config)
-  await addJest(config)
-  if (config.gitCommits || config.gitRepo) {
-    await addLintStaged(config)
-  } else {
-    config.logger.logMessage("Not installing lint-staged because git is disabled", { type: "info" })
+  try {
+    await prepareTargetDir(config)
+    await ensureGitRepo(config, gitOrigin, gitBranch)
+    await addNixShell(config)
+    await initializeProject(config, name, "0.0.0", description, authorName, authorEmail, "MIT")
+    await addTypescript(config)
+    await addPrettier(config)
+    await addEslint(config)
+    await addJest(config)
+    if (config.gitCommits || config.gitRepo) {
+      await addLintStaged(config)
+    } else {
+      config.logger.logMessage("Not installing lint-staged because git is disabled", { type: "info" })
+    }
+    if (config.gitRepo) {
+      await addHusky(config)
+    }
+    await addVscodeSettings(config)
+    if (type === "library") {
+      await setupLibrary(config)
+    }
+    if (type === "application") {
+      await setupApplication(config)
+    }
+    config.logger.logMessage("Created typescript thing successfully", { type: "success" })
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      config.logger.logMessage(e.message, { type: "error" })
+    }
+    throw e
   }
-  if (config.gitRepo) {
-    await addHusky(config)
-  }
-  await addVscodeSettings(config)
-  if (type === "library") {
-    await setupLibrary(config)
-  }
-  if (type === "application") {
-    await setupApplication(config)
-  }
-  config.logger.logMessage("Created typescript thing successfully", { type: "success" })
 }
 
 export default createTypescriptThing
