@@ -14,6 +14,11 @@ import { initializeProject } from "steps/initializeProject"
 import { setupApplication } from "steps/setupApplication"
 import { setupLibrary } from "steps/setupLibrary"
 
+export type Logger = {
+  logMessage?: (message: string, options: { type?: "info" | "error" | "warning" | "success" }) => void
+  logState?: (id: string, options: { text?: string; state?: "pending" | "active" | "completed" | "failed" }) => void
+}
+
 export type Options = {
   path: string
   name: string
@@ -31,6 +36,8 @@ export type Options = {
   disableGitRepo?: boolean
   gitOrigin?: string
   gitBranch?: string
+
+  logger?: Logger
 }
 
 export const createTypescriptThing = async (options: Options) => {
