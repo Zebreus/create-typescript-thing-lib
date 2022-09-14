@@ -57,6 +57,9 @@ const checkExistingRepo = async (config: Config, origin: string | undefined, mai
 }
 
 const createNewRepo = async (config: Config, origin: string, mainBranch: string) => {
+  config.logger.logState("gitcreate", { state: "active", text: "Initializing git repo" })
   await init({ fs, dir: config.targetDir, defaultBranch: mainBranch })
+  config.logger.logState("gitcreate", { state: "active", text: "Adding git origin" })
   await addRemote({ fs, dir: config.targetDir, remote: "origin", url: origin })
+  config.logger.logState("gitcreate", { state: "completed", text: "Initialized git repo" })
 }

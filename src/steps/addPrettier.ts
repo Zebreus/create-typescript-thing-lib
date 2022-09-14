@@ -2,9 +2,10 @@ import { addScriptToPackage } from "helpers/addScriptToPackage"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
+import { withStateLogger } from "helpers/withStateLogger"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 
-export const addPrettier = async (config: Config) => {
+export const addPrettier = withStateLogger({ id: "prettier" }, async (config: Config) => {
   await installPackage(config, ["prettier", "prettier-plugin-organize-imports"])
 
   const prettierRcObject = {
@@ -33,4 +34,4 @@ export const addPrettier = async (config: Config) => {
   await addScriptToPackage(config, "format", "prettier --write .")
 
   await commitWithAuthor(config, "Install prettier")
-}
+})

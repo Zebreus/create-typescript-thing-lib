@@ -3,9 +3,10 @@ import { addToGitIgnore } from "helpers/addToGitIgnore"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
+import { withStateLogger } from "helpers/withStateLogger"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 
-export const addEslint = async (config: Config) => {
+export const addEslint = withStateLogger({ id: "eslint" }, async (config: Config) => {
   await installPackage(config, [
     "eslint",
     "@types/eslint",
@@ -95,4 +96,4 @@ export const addEslint = async (config: Config) => {
   await addToGitIgnore(config, "eslint", ".eslintcache")
 
   await commitWithAuthor(config, "Install eslint")
-}
+})

@@ -1,4 +1,4 @@
-import { Options } from "index"
+import { Logger, Options } from "index"
 import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 import { normalize, resolve } from "path"
 
@@ -12,6 +12,7 @@ export type Config = {
   packageManager: PackageManager
   gitCommits: boolean
   gitRepo: boolean
+  logger: Logger
 }
 
 export const generateConfig = async (config: Options): Promise<Config> => {
@@ -20,5 +21,9 @@ export const generateConfig = async (config: Options): Promise<Config> => {
     packageManager: config.packageManager ?? "npm",
     gitCommits: !config.disableGitCommits,
     gitRepo: !config.disableGitRepo,
+    logger: {
+      logMessage: config.logger?.logMessage ?? (() => {}),
+      logState: config.logger?.logState ?? (() => {}),
+    },
   }
 }

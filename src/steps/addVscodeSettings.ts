@@ -1,13 +1,21 @@
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
+import { withStateLogger } from "helpers/withStateLogger"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 
-export const addVscodeSettings = async (config: Config) => {
-  await writeAndAddFile(config, ".vscode/settings.json", JSON.stringify(generateVscodeSettings(), null, 2))
-  await writeAndAddFile(config, ".vscode/extensions.json", JSON.stringify(generateVscodeExtensions(), null, 2))
+export const addVscodeSettings = withStateLogger(
+  {
+    id: "vscodesettings",
+    message: "Adding vscode extension and setting recommendations",
+    completed: "Added vscode recommendations",
+  },
+  async (config: Config) => {
+    await writeAndAddFile(config, ".vscode/settings.json", JSON.stringify(generateVscodeSettings(), null, 2))
+    await writeAndAddFile(config, ".vscode/extensions.json", JSON.stringify(generateVscodeExtensions(), null, 2))
 
-  await commitWithAuthor(config, "Add vscode settings")
-}
+    await commitWithAuthor(config, "Add vscode settings")
+  }
+)
 
 const generateVscodeSettings = () => {
   return {

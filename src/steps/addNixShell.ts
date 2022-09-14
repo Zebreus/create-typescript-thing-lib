@@ -1,11 +1,15 @@
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
+import { withStateLogger } from "helpers/withStateLogger"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 
-export const addNixShell = async (config: Config) => {
-  await writeAndAddFile(config, "shell.nix", generateNixShell(config))
-  await commitWithAuthor(config, "Add nix shell")
-}
+export const addNixShell = withStateLogger(
+  { id: "nix shell", message: "Adding nix shell", completed: "Added nix shell" },
+  async (config: Config) => {
+    await writeAndAddFile(config, "shell.nix", generateNixShell(config))
+    await commitWithAuthor(config, "Add nix shell")
+  }
+)
 
 const generateNixShell = (config: Config) => {
   return `{ pkgs ? import <nixpkgs> { } }:

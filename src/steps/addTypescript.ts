@@ -2,9 +2,10 @@ import { addToGitIgnore } from "helpers/addToGitIgnore"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
+import { withStateLogger } from "helpers/withStateLogger"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 
-export const addTypescript = async (config: Config) => {
+export const addTypescript = withStateLogger({ id: "TypeScript" }, async (config: Config) => {
   await installPackage(config, ["typescript", "@types/node"])
 
   const tsConfigObject = {
@@ -48,4 +49,4 @@ export const addTypescript = async (config: Config) => {
   await addToGitIgnore(config, "typescript", ["*.tsbuildinfo", "dist/"])
 
   await commitWithAuthor(config, "Install typescript")
-}
+})

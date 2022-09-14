@@ -12,6 +12,10 @@ const testConfig = (dir: string): Config => ({
   gitCommits: true,
   gitRepo: true,
   packageManager: "npm",
+  logger: {
+    logMessage: () => {},
+    logState: () => {},
+  },
 })
 
 describe("The structure of the generated project looks ok", () => {

@@ -15,8 +15,8 @@ import { setupApplication } from "steps/setupApplication"
 import { setupLibrary } from "steps/setupLibrary"
 
 export type Logger = {
-  logMessage?: (message: string, options: { type?: "info" | "error" | "warning" | "success" }) => void
-  logState?: (id: string, options: { text?: string; state?: "pending" | "active" | "completed" | "failed" }) => void
+  logMessage: (message: string, options: { type?: "info" | "error" | "warning" | "success" }) => void
+  logState: (id: string, options: { text?: string; state?: "pending" | "active" | "completed" | "failed" }) => void
 }
 
 export type Options = {
@@ -37,7 +37,7 @@ export type Options = {
   gitOrigin?: string
   gitBranch?: string
 
-  logger?: Logger
+  logger?: Partial<Logger>
 }
 
 export const createTypescriptThing = async (options: Options) => {
@@ -53,6 +53,8 @@ export const createTypescriptThing = async (options: Options) => {
   await addJest(config)
   if (config.gitCommits || config.gitRepo) {
     await addLintStaged(config)
+  } else {
+    config.logger.logMessage("Not installing lint-staged because git is disabled", { type: "info" })
   }
   if (config.gitRepo) {
     await addHusky(config)
@@ -64,6 +66,7 @@ export const createTypescriptThing = async (options: Options) => {
   if (type === "application") {
     await setupApplication(config)
   }
+  config.logger.logMessage("Created typescript thing successfully", { type: "success" })
 }
 
 export default createTypescriptThing

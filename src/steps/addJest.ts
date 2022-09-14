@@ -5,10 +5,11 @@ import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
 import { modifyJsonConfig as modifyJsonFile } from "helpers/modifyJsonFile"
+import { withStateLogger } from "helpers/withStateLogger"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 import { Tsconfig } from "tsconfig-type"
 
-export const addJest = async (config: Config) => {
+export const addJest = withStateLogger({ id: "jest" }, async (config: Config) => {
   await installPackage(config, ["jest", "@types/jest", "ts-jest", "ts-node", "eslint-plugin-jest"])
 
   const jestConfigObject = {
@@ -45,7 +46,7 @@ export const addJest = async (config: Config) => {
   await addScriptToPackage(config, "test", "jest")
 
   await commitWithAuthor(config, "Install jest")
-}
+})
 
 const generateExampleTest = () => {
   return `describe("some examples work", () => {

@@ -5,6 +5,7 @@ export const prepareTargetDir = async (config: Config) => {
   try {
     await access(config.targetDir)
   } catch (e) {
+    config.logger.logMessage("Creating target directory", { type: "info" })
     await mkdir(config.targetDir, { recursive: true })
   }
 
