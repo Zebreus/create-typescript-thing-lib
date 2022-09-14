@@ -3,10 +3,9 @@ import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
-import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 
-export const addHusky = async (config: Config, packageManager: PackageManager) => {
-  await installPackage(config, packageManager, ["husky", "pinst"])
+export const addHusky = async (config: Config) => {
+  await installPackage(config, ["husky", "pinst"])
 
   await writeAndAddFile(
     config,

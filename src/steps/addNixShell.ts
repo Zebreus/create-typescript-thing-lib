@@ -1,20 +1,19 @@
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
-import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 
-export const addNixShell = async (config: Config, packageManager: PackageManager) => {
-  await writeAndAddFile(config, "shell.nix", generateNixShell(packageManager))
+export const addNixShell = async (config: Config) => {
+  await writeAndAddFile(config, "shell.nix", generateNixShell(config))
   await commitWithAuthor(config, "Add nix shell")
 }
 
-const generateNixShell = (packageManager: PackageManager) => {
+const generateNixShell = (config: Config) => {
   return `{ pkgs ? import <nixpkgs> { } }:
   with pkgs;
   mkShell {
     nativeBuildInputs = [
       nodejs
-      ${packageManager === "yarn" ? "yarn" : packageManager === "pnpm" ? "nodePackages.pnpm" : ""}
+      ${config.packageManager === "yarn" ? "yarn" : config.packageManager === "pnpm" ? "nodePackages.pnpm" : ""}
       git
     ];
     shellHook = with pkgs; ''

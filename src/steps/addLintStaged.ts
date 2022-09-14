@@ -2,10 +2,9 @@ import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
-import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 
-export const addLintStaged = async (config: Config, packageManager: PackageManager) => {
-  await installPackage(config, packageManager, ["lint-staged", "tsc-files"])
+export const addLintStaged = async (config: Config) => {
+  await installPackage(config, ["lint-staged", "tsc-files"])
 
   const lintStagedRcObject = {
     "*.+(ts|tsx)": ["prettier --write", "eslint --cache --fix", "tsc-files --noEmit"],

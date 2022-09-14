@@ -4,11 +4,10 @@ import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
 import { modifyJsonConfig } from "helpers/modifyJsonFile"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
-import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 import { PackageJson } from "types-package-json"
 
-export const setupLibrary = async (config: Config, packageManager: PackageManager) => {
-  await installPackage(config, packageManager, ["resolve-tspaths"])
+export const setupLibrary = async (config: Config) => {
+  await installPackage(config, ["resolve-tspaths"])
 
   await modifyJsonConfig<Omit<PackageJson, "keywords"> & { keywords?: string[] }>(
     config,

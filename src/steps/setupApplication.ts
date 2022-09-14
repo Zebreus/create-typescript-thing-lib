@@ -4,11 +4,10 @@ import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
 import { modifyJsonConfig } from "helpers/modifyJsonFile"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
-import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 import { PackageJson } from "types-package-json"
 
-export const setupApplication = async (config: Config, packageManager: PackageManager, name: string) => {
-  await installPackage(config, packageManager, ["@vercel/ncc"])
+export const setupApplication = async (config: Config) => {
+  await installPackage(config, ["@vercel/ncc"])
 
   await modifyJsonConfig<Omit<PackageJson, "keywords"> & { keywords?: string[] }>(
     config,
@@ -20,7 +19,7 @@ export const setupApplication = async (config: Config, packageManager: PackageMa
       main: "dist/index.js",
       bin: {
         ...(packageJson.bin || {}),
-        [name]: "dist/index.js",
+        [packageJson.name]: "dist/index.js",
       },
     })
   )

@@ -28,11 +28,11 @@ export type Options = {
    * @default "npm"
    */
   packageManager?: PackageManager
+  disableGit?: boolean
 }
 
 export const createTypescriptThing = async (options: Options) => {
   const {
-    name,
     description,
     type,
     //   monorepo = false,
@@ -40,25 +40,24 @@ export const createTypescriptThing = async (options: Options) => {
     branch = "main",
     authorName,
     authorEmail,
-    packageManager = "npm",
   } = options
   const config = await generateConfig(options)
   await prepareTargetDir(config)
   await ensureGitRepo(config, repo, branch)
-  await addNixShell(config, packageManager)
-  await initializeProject(config, name, "0.0.0", description, authorName, authorEmail, "MIT")
-  await addTypescript(config, packageManager)
-  await addPrettier(config, packageManager)
-  await addEslint(config, packageManager)
-  await addJest(config, packageManager)
-  await addLintStaged(config, packageManager)
-  await addHusky(config, packageManager)
+  await addNixShell(config)
+  await initializeProject(config, "0.0.0", description, authorName, authorEmail, "MIT")
+  await addTypescript(config)
+  await addPrettier(config)
+  await addEslint(config)
+  await addJest(config)
+  await addLintStaged(config)
+  await addHusky(config)
   await addVscodeSettings(config)
   if (type === "library") {
-    await setupLibrary(config, packageManager)
+    await setupLibrary(config)
   }
   if (type === "application") {
-    await setupApplication(config, packageManager, name)
+    await setupApplication(config)
   }
 }
 

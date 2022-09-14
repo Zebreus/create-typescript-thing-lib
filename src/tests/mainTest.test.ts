@@ -1,4 +1,5 @@
 import { mkdtemp, rm, stat } from "fs/promises"
+import { Config } from "helpers/generateConfig"
 import { loadExistingFile } from "helpers/loadExistingFile"
 import { createTypescriptThing } from "index"
 import { tmpdir } from "os"
@@ -6,8 +7,11 @@ import { resolve } from "path"
 import { sh } from "sh"
 import { runInDirectory } from "tests/runInDirectory"
 
-const testConfig = (dir: string) => ({
+const testConfig = (dir: string): Config => ({
   targetDir: dir,
+  git: true,
+  packageManager: "npm",
+  name: "test",
 })
 
 describe("The structure of the generated project looks ok", () => {

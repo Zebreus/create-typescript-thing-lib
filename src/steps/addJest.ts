@@ -6,11 +6,10 @@ import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
 import { modifyJsonConfig as modifyJsonFile } from "helpers/modifyJsonFile"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
-import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 import { Tsconfig } from "tsconfig-type"
 
-export const addJest = async (config: Config, packageManager: PackageManager) => {
-  await installPackage(config, packageManager, ["jest", "@types/jest", "ts-jest", "ts-node", "eslint-plugin-jest"])
+export const addJest = async (config: Config) => {
+  await installPackage(config, ["jest", "@types/jest", "ts-jest", "ts-node", "eslint-plugin-jest"])
 
   const jestConfigObject = {
     roots: ["<rootDir>/src"],
