@@ -51,8 +51,12 @@ export const createTypescriptThing = async (options: Options) => {
   await addPrettier(config)
   await addEslint(config)
   await addJest(config)
-  await addLintStaged(config)
-  await addHusky(config)
+  if (config.gitCommits || config.gitRepo) {
+    await addLintStaged(config)
+  }
+  if (config.gitRepo) {
+    await addHusky(config)
+  }
   await addVscodeSettings(config)
   if (type === "library") {
     await setupLibrary(config)
