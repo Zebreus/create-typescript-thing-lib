@@ -10,6 +10,7 @@ import { PackageJson } from "types-package-json"
 
 export const initializeProject = async (
   config: Config,
+  name: string,
   version: string,
   description: string | undefined,
   authorName: string | undefined,
@@ -19,7 +20,7 @@ export const initializeProject = async (
   const previousPackage = JSON.parse((await loadExistingFile(config, "package.json")) || "{}") as Partial<PackageJson>
   const packageJson = {
     ...previousPackage,
-    name: config.name,
+    name,
     version,
     description,
     ...(authorName || authorEmail ? { author: { name: authorName, email: authorEmail } } : {}),

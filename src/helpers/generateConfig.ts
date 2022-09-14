@@ -9,16 +9,16 @@ import { normalize, resolve } from "path"
  */
 export type Config = {
   targetDir: string
-  name: string
   packageManager: PackageManager
-  git: boolean
+  gitCommits: boolean
+  gitRepo: boolean
 }
 
 export const generateConfig = async (config: Options): Promise<Config> => {
   return {
     targetDir: normalize(resolve(process.cwd(), config.path || config.name || ".")),
-    name: config.name,
     packageManager: config.packageManager ?? "npm",
-    git: config.disableGit ? false : true,
+    gitCommits: !config.disableGitCommits,
+    gitRepo: !config.disableGitRepo,
   }
 }

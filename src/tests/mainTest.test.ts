@@ -9,16 +9,16 @@ import { runInDirectory } from "tests/runInDirectory"
 
 const testConfig = (dir: string): Config => ({
   targetDir: dir,
-  git: true,
+  gitCommits: true,
+  gitRepo: true,
   packageManager: "npm",
-  name: "test",
 })
 
 describe("The structure of the generated project looks ok", () => {
   let dir = ""
   beforeAll(async () => {
     dir = await mkdtemp(resolve(tmpdir(), "cttl-test-"))
-    await createTypescriptThing({ path: dir, name: "test", type: "library", monorepo: false, repo: "test.com" })
+    await createTypescriptThing({ path: dir, name: "test", type: "library", gitOrigin: "test.com" })
   }, 120000)
 
   afterAll(async () => {
@@ -91,7 +91,7 @@ describe("The generated project seems to work", () => {
   let dir = ""
   beforeAll(async () => {
     dir = await mkdtemp(resolve(tmpdir(), "cttl-test-"))
-    await createTypescriptThing({ path: dir, name: "test", type: "library", monorepo: false, repo: "test.com" })
+    await createTypescriptThing({ path: dir, name: "test", type: "library", gitOrigin: "test.com" })
     await sh(`cd '${dir}' && npm install`)
   }, 120000)
 
@@ -117,6 +117,6 @@ describe("The generated project seems to work", () => {
 
 it("Entrypoint for debugging", async () => {
   await runInDirectory(async dir => {
-    await createTypescriptThing({ path: dir, name: "test", type: "library", monorepo: false, repo: "test.com" })
+    await createTypescriptThing({ path: dir, name: "test", type: "library", gitOrigin: "test.com" })
   })
 }, 120000)

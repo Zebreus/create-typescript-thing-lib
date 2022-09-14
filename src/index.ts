@@ -19,33 +19,27 @@ export type Options = {
   name: string
   description?: string
   type: "library" | "application"
-  monorepo: boolean
-  repo: string
-  branch?: string
   authorName?: string
   authorEmail?: string
   /** Select the flavor of lockfiles you want. Also the nix file will install this packagemanager.
    * @default "npm"
    */
   packageManager?: PackageManager
-  disableGit?: boolean
+  /** Do not create git commits */
+  disableGitCommits?: boolean
+  /** Do not create or modify a git repository. Set this, if the target dir is already inside a git repo. */
+  disableGitRepo?: boolean
+  gitOrigin?: string
+  gitBranch?: string
 }
 
 export const createTypescriptThing = async (options: Options) => {
-  const {
-    description,
-    type,
-    //   monorepo = false,
-    repo,
-    branch = "main",
-    authorName,
-    authorEmail,
-  } = options
+  const { name, description, type, gitOrigin, gitBranch = "main", authorName, authorEmail } = options
   const config = await generateConfig(options)
   await prepareTargetDir(config)
-  await ensureGitRepo(config, repo, branch)
+  await ensureGitRepo(config, gitOrigin, gitBranch)
   await addNixShell(config)
-  await initializeProject(config, "0.0.0", description, authorName, authorEmail, "MIT")
+  await initializeProject(config, name, "0.0.0", description, authorName, authorEmail, "MIT")
   await addTypescript(config)
   await addPrettier(config)
   await addEslint(config)
