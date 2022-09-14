@@ -28,5 +28,7 @@ export const writeAndAddFile = async (
     await chmod(targetFile, 0o755)
   }
 
-  await add({ fs, dir: config.targetDir, filepath: relative(config.targetDir, targetFile) })
+  if (config.gitCommits) {
+    await add({ fs, dir: config.targetDir, filepath: relative(config.targetDir, targetFile) })
+  }
 }

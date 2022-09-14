@@ -5,6 +5,9 @@ import { add } from "isomorphic-git"
 import { relative, resolve } from "path"
 
 export const addPackageJsonToGit = async (config: Config) => {
+  if (!config.gitCommits) {
+    return
+  }
   const files = ["package.json", "package-lock.json", "yarn.lock", "pnpm-lock.yaml", "npm-shrinkwrap.json"]
   const filePathPromises = files
     .map(file => resolve(config.targetDir, file))

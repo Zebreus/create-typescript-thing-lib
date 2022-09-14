@@ -3,6 +3,9 @@ import { Config } from "helpers/generateConfig"
 import { commit } from "isomorphic-git"
 
 export const commitWithAuthor = async (config: Config, message: string) => {
+  if (!config.gitCommits) {
+    return
+  }
   return await commit({
     fs,
     dir: config.targetDir,

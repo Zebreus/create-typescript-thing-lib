@@ -18,13 +18,14 @@ export const initializeProject = async (
   license: string | undefined
 ) => {
   const previousPackage = JSON.parse((await loadExistingFile(config, "package.json")) || "{}") as Partial<PackageJson>
+  const repositoryInformation = await getRepositoryInformation(config)
   const packageJson = {
     ...previousPackage,
     name,
     version,
     description,
     ...(authorName || authorEmail ? { author: { name: authorName, email: authorEmail } } : {}),
-    repository: await getRepositoryInformation(config),
+    repository: repositoryInformation,
     license,
   }
 
@@ -36,11 +37,12 @@ export const initializeProject = async (
 }
 
 const getRepositoryInformation = async (config: Config) => {
-  const remotes = await listRemotes({ fs, dir: config.targetDir })
-  const origin = remotes.find(remote => remote.remote === "origin")?.url
+  const remotes = await listRemotes({ fs, dir: config.targetDir }).catch(() => [])
+  const origin =
+    remotes.find(remote => remote.remote === "origin")?.url || remotes.find(remote => remote.remote === "upstream")?.url
 
   if (!origin) {
-    throw new Error("Currently you need a git remote")
+    return undefined
   }
 
   const gitRoot = await findRoot({ fs, filepath: config.targetDir })
