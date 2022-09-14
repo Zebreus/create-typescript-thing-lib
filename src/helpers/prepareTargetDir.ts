@@ -1,22 +1,23 @@
 import { access, mkdir, stat } from "fs/promises"
+import { Config } from "helpers/generateConfig"
 
-export const prepareTargetDir = async (targetDir: string) => {
+export const prepareTargetDir = async (config: Config) => {
   try {
-    await access(targetDir)
+    await access(config.targetDir)
   } catch (e) {
-    await mkdir(targetDir, { recursive: true })
+    await mkdir(config.targetDir, { recursive: true })
   }
 
-  const targetDirStat = await stat(targetDir)
+  const targetDirStat = await stat(config.targetDir)
   if (!targetDirStat.isDirectory()) {
-    throw new Error(`Target directory ${targetDir} is not a directory`)
+    throw new Error(`Target directory ${config.targetDir} is not a directory`)
   }
 
-  const packageJsonAlreadyExists = await access(targetDir + "/package.json")
+  const packageJsonAlreadyExists = await access(config.targetDir + "/package.json")
     .then(() => true)
     .catch(() => false)
 
   if (packageJsonAlreadyExists) {
-    throw new Error(`Target directory ${targetDir} already contains a package.json`)
+    throw new Error(`Target directory ${config.targetDir} already contains a package.json`)
   }
 }

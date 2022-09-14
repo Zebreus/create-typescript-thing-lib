@@ -6,6 +6,10 @@ import { resolve } from "path"
 import { sh } from "sh"
 import { runInDirectory } from "tests/runInDirectory"
 
+const testConfig = (dir: string) => ({
+  targetDir: dir,
+})
+
 describe("The structure of the generated project looks ok", () => {
   let dir = ""
   beforeAll(async () => {
@@ -18,60 +22,60 @@ describe("The structure of the generated project looks ok", () => {
   })
 
   it("Creates a nix shell file", async () => {
-    const file = await loadExistingFile(dir, "shell.nix")
+    const file = await loadExistingFile(testConfig(dir), "shell.nix")
     expect(file).toBeTruthy()
   })
 
   it("Creates a correct package.json file", async () => {
-    const packageJson = await loadExistingFile(dir, "package.json")
+    const packageJson = await loadExistingFile(testConfig(dir), "package.json")
     expect(packageJson).toBeTruthy()
     const packageObject = JSON.parse(packageJson || "")
     expect(packageObject.name).toBe("test")
   })
 
   it("Creates a typescript project file", async () => {
-    const fileJson = await loadExistingFile(dir, "tsconfig.json")
+    const fileJson = await loadExistingFile(testConfig(dir), "tsconfig.json")
     expect(fileJson).toBeTruthy()
     const fileObject = JSON.parse(fileJson || "")
     expect(typeof fileObject.compilerOptions).toBe("object")
   })
 
   it("Creates a prettier config file", async () => {
-    const fileJson = await loadExistingFile(dir, ".prettierrc.json")
+    const fileJson = await loadExistingFile(testConfig(dir), ".prettierrc.json")
     expect(fileJson).toBeTruthy()
     const fileObject = JSON.parse(fileJson || "")
     expect(typeof fileObject).toBe("object")
   })
 
   it("Creates an eslint config file", async () => {
-    const fileJson = await loadExistingFile(dir, ".eslintrc.json")
+    const fileJson = await loadExistingFile(testConfig(dir), ".eslintrc.json")
     expect(fileJson).toBeTruthy()
     const fileObject = JSON.parse(fileJson || "")
     expect(typeof fileObject).toBe("object")
   })
 
   it("Creates a jest config file", async () => {
-    const fileJson = await loadExistingFile(dir, "jest.config.js")
+    const fileJson = await loadExistingFile(testConfig(dir), "jest.config.js")
     expect(fileJson).toBeTruthy()
   })
 
   it("Creates a lint-staged config file", async () => {
-    const fileJson = await loadExistingFile(dir, ".lintstagedrc.json")
+    const fileJson = await loadExistingFile(testConfig(dir), ".lintstagedrc.json")
     expect(fileJson).toBeTruthy()
     const fileObject = JSON.parse(fileJson || "")
     expect(typeof fileObject).toBe("object")
   })
 
   it("Creates an executable precommit hook", async () => {
-    const file = await loadExistingFile(dir, ".husky/pre-commit")
+    const file = await loadExistingFile(testConfig(dir), ".husky/pre-commit")
     expect(file).toBeTruthy()
     const statResult = await stat(resolve(dir, ".husky/pre-commit"))
     expect(statResult.mode & 0o111).toBe(0o111)
   })
 
   it("Creates vscode config files", async () => {
-    const fileJson1 = await loadExistingFile(dir, ".vscode/settings.json")
-    const fileJson2 = await loadExistingFile(dir, ".vscode/extensions.json")
+    const fileJson1 = await loadExistingFile(testConfig(dir), ".vscode/settings.json")
+    const fileJson2 = await loadExistingFile(testConfig(dir), ".vscode/extensions.json")
     expect(fileJson1).toBeTruthy()
     expect(fileJson2).toBeTruthy()
     expect(typeof JSON.parse(fileJson1 || "")).toBe("object")

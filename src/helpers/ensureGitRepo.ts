@@ -1,24 +1,25 @@
 import fs from "fs"
+import { Config } from "helpers/generateConfig"
 import { addRemote, currentBranch, init, listRemotes } from "isomorphic-git"
 
-export const ensureGitRepo = async (targetDir: string, origin: string, mainBranch: string) => {
-  const repoExists = await currentBranch({ fs, dir: targetDir }).catch(() => undefined)
+export const ensureGitRepo = async (config: Config, origin: string, mainBranch: string) => {
+  const repoExists = await currentBranch({ fs, dir: config.targetDir }).catch(() => undefined)
   if (repoExists) {
-    await checkExistingRepo(targetDir, origin, mainBranch)
+    await checkExistingRepo(config, origin, mainBranch)
     return
   }
 
-  await createNewRepo(targetDir, origin, mainBranch)
+  await createNewRepo(config, origin, mainBranch)
 }
 
-const checkExistingRepo = async (targetDir: string, origin: string, mainBranch: string) => {
-  const actualBranch = await currentBranch({ fs, dir: targetDir })
+const checkExistingRepo = async (config: Config, origin: string, mainBranch: string) => {
+  const actualBranch = await currentBranch({ fs, dir: config.targetDir })
   if (actualBranch !== mainBranch) {
     throw new Error(`Current branch is ${actualBranch}, but should be ${mainBranch}`)
   }
   const remotes = await listRemotes({ fs, dir: "." })
   if (remotes.length === 0) {
-    await addRemote({ fs, dir: targetDir, remote: "origin", url: origin })
+    await addRemote({ fs, dir: config.targetDir, remote: "origin", url: origin })
     return
   }
   const originRemote = remotes.find(remote => remote.remote === "origin")
@@ -35,7 +36,7 @@ const checkExistingRepo = async (targetDir: string, origin: string, mainBranch: 
   return
 }
 
-const createNewRepo = async (targetDir: string, origin: string, mainBranch: string) => {
-  await init({ fs, dir: targetDir, defaultBranch: mainBranch })
-  await addRemote({ fs, dir: targetDir, remote: "origin", url: origin })
+const createNewRepo = async (config: Config, origin: string, mainBranch: string) => {
+  await init({ fs, dir: config.targetDir, defaultBranch: mainBranch })
+  await addRemote({ fs, dir: config.targetDir, remote: "origin", url: origin })
 }

@@ -1,8 +1,9 @@
+import { Config } from "helpers/generateConfig"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 
-export const addCommonJsExportFile = async (targetDir: string, file: string, content: unknown) => {
+export const addCommonJsExportFile = async (config: Config, file: string, content: unknown) => {
   const stringContent = generateCommonJsExportFile(content)
-  await writeAndAddFile(targetDir, file, stringContent)
+  await writeAndAddFile(config, file, stringContent)
 }
 
 export const generateCommonJsExportFile = (content: unknown) => {

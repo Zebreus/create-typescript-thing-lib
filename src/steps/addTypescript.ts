@@ -1,11 +1,12 @@
 import { addToGitIgnore } from "helpers/addToGitIgnore"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
+import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 
-export const addTypescript = async (targetDir: string, packageManager: PackageManager) => {
-  await installPackage(targetDir, packageManager, ["typescript", "@types/node"])
+export const addTypescript = async (config: Config, packageManager: PackageManager) => {
+  await installPackage(config, packageManager, ["typescript", "@types/node"])
 
   const tsConfigObject = {
     compilerOptions: {
@@ -33,7 +34,7 @@ export const addTypescript = async (targetDir: string, packageManager: PackageMa
     },
     include: ["src/**/*"],
   }
-  await writeAndAddFile(targetDir, "tsconfig.json", JSON.stringify(tsConfigObject, null, 2))
+  await writeAndAddFile(config, "tsconfig.json", JSON.stringify(tsConfigObject, null, 2))
 
   const tsConfigBuildObject = {
     extends: "./tsconfig.json",
@@ -43,9 +44,9 @@ export const addTypescript = async (targetDir: string, packageManager: PackageMa
       declarationMap: false,
     },
   }
-  await writeAndAddFile(targetDir, "tsconfig.build.json", JSON.stringify(tsConfigBuildObject, null, 2))
+  await writeAndAddFile(config, "tsconfig.build.json", JSON.stringify(tsConfigBuildObject, null, 2))
 
-  await addToGitIgnore(targetDir, "typescript", ["*.tsbuildinfo", "dist/"])
+  await addToGitIgnore(config, "typescript", ["*.tsbuildinfo", "dist/"])
 
-  await commitWithAuthor(targetDir, "Install typescript")
+  await commitWithAuthor(config, "Install typescript")
 }

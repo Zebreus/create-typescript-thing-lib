@@ -1,6 +1,7 @@
 import fs from "fs"
 import { addToGitIgnore } from "helpers/addToGitIgnore"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
+import { Config } from "helpers/generateConfig"
 import { loadExistingFile } from "helpers/loadExistingFile"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 import { findRoot, listRemotes } from "isomorphic-git"
@@ -8,7 +9,7 @@ import { normalize, relative, resolve } from "path"
 import { PackageJson } from "types-package-json"
 
 export const initializeProject = async (
-  targetDir: string,
+  config: Config,
   name: string,
   version: string,
   description: string | undefined,
@@ -16,36 +17,34 @@ export const initializeProject = async (
   authorEmail: string | undefined,
   license: string | undefined
 ) => {
-  const previousPackage = JSON.parse(
-    (await loadExistingFile(targetDir, "package.json")) || "{}"
-  ) as Partial<PackageJson>
+  const previousPackage = JSON.parse((await loadExistingFile(config, "package.json")) || "{}") as Partial<PackageJson>
   const packageJson = {
     ...previousPackage,
     name,
     version,
     description,
     ...(authorName || authorEmail ? { author: { name: authorName, email: authorEmail } } : {}),
-    repository: await getRepositoryInformation(targetDir),
+    repository: await getRepositoryInformation(config),
     license,
   }
 
-  await writeAndAddFile(targetDir, "package.json", JSON.stringify(packageJson, null, 2))
+  await writeAndAddFile(config, "package.json", JSON.stringify(packageJson, null, 2))
 
-  await addToGitIgnore(targetDir, "node", ["node_modules", "yarn-error.log"])
+  await addToGitIgnore(config, "node", ["node_modules", "yarn-error.log"])
 
-  await commitWithAuthor(targetDir, "Initialize node project")
+  await commitWithAuthor(config, "Initialize node project")
 }
 
-const getRepositoryInformation = async (targetDir: string) => {
-  const remotes = await listRemotes({ fs, dir: targetDir })
+const getRepositoryInformation = async (config: Config) => {
+  const remotes = await listRemotes({ fs, dir: config.targetDir })
   const origin = remotes.find(remote => remote.remote === "origin")?.url
 
   if (!origin) {
     throw new Error("Currently you need a git remote")
   }
 
-  const gitRoot = await findRoot({ fs, filepath: targetDir })
-  const absoluteTargetDir = normalize(resolve(process.cwd(), targetDir))
+  const gitRoot = await findRoot({ fs, filepath: config.targetDir })
+  const absoluteTargetDir = normalize(resolve(process.cwd(), config.targetDir))
   const absoluteGitRootDir = normalize(resolve(process.cwd(), gitRoot))
   const projectLocationRelativeToGitRoot = relative(absoluteGitRootDir, absoluteTargetDir)
 

@@ -1,16 +1,17 @@
 import fs from "fs"
 import { access, chmod, mkdir, writeFile } from "fs/promises"
 import { formatFileContent } from "helpers/formatFileContent"
+import { Config } from "helpers/generateConfig"
 import { add } from "isomorphic-git"
 import { dirname, relative, resolve } from "path"
 
 export const writeAndAddFile = async (
-  targetDir: string,
+  config: Config,
   file: string,
   content: string,
   options?: { executable?: boolean }
 ) => {
-  const targetFile = resolve(targetDir, file)
+  const targetFile = resolve(config.targetDir, file)
   const dir = dirname(targetFile)
   const dirExists = await access(dir)
     .then(() => true)
@@ -27,5 +28,5 @@ export const writeAndAddFile = async (
     await chmod(targetFile, 0o755)
   }
 
-  await add({ fs, dir: targetDir, filepath: relative(targetDir, targetFile) })
+  await add({ fs, dir: config.targetDir, filepath: relative(config.targetDir, targetFile) })
 }

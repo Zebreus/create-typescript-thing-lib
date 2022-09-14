@@ -1,8 +1,9 @@
+import { Config } from "helpers/generateConfig"
 import { loadExistingFile } from "helpers/loadExistingFile"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 
-export const modifyJsonConfig = async <T>(targetDir: string, file: string, modify: (source: T) => Promise<T> | T) => {
-  const sourceFile = await loadExistingFile(targetDir, file)
+export const modifyJsonConfig = async <T>(config: Config, file: string, modify: (source: T) => Promise<T> | T) => {
+  const sourceFile = await loadExistingFile(config, file)
   if (!sourceFile) {
     throw new Error(`File ${file} not found`)
   }
@@ -11,5 +12,5 @@ export const modifyJsonConfig = async <T>(targetDir: string, file: string, modif
     throw new Error(`File ${file} does not contain a JSON object`)
   }
   const modified = await modify(sourceObject)
-  await writeAndAddFile(targetDir, file, JSON.stringify(modified, null, 2))
+  await writeAndAddFile(config, file, JSON.stringify(modified, null, 2))
 }

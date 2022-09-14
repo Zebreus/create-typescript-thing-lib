@@ -2,14 +2,15 @@ import { Eslintrc } from "eslintrc-type"
 import { addCommonJsExportFile } from "helpers/addJsExportFile"
 import { addScriptToPackage } from "helpers/addScriptToPackage"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
+import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
 import { modifyJsonConfig as modifyJsonFile } from "helpers/modifyJsonFile"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 import { Tsconfig } from "tsconfig-type"
 
-export const addJest = async (targetDir: string, packageManager: PackageManager) => {
-  await installPackage(targetDir, packageManager, ["jest", "@types/jest", "ts-jest", "ts-node", "eslint-plugin-jest"])
+export const addJest = async (config: Config, packageManager: PackageManager) => {
+  await installPackage(config, packageManager, ["jest", "@types/jest", "ts-jest", "ts-node", "eslint-plugin-jest"])
 
   const jestConfigObject = {
     roots: ["<rootDir>/src"],
@@ -24,16 +25,16 @@ export const addJest = async (targetDir: string, packageManager: PackageManager)
     },
   }
 
-  await addCommonJsExportFile(targetDir, "jest.config.js", jestConfigObject)
+  await addCommonJsExportFile(config, "jest.config.js", jestConfigObject)
 
-  await writeAndAddFile(targetDir, "src/tests/example.test.ts", generateExampleTest())
+  await writeAndAddFile(config, "src/tests/example.test.ts", generateExampleTest())
 
-  await modifyJsonFile<Tsconfig>(targetDir, "tsconfig.build.json", tsConfig => ({
+  await modifyJsonFile<Tsconfig>(config, "tsconfig.build.json", tsConfig => ({
     ...tsConfig,
     exclude: [...new Set([...(tsConfig.exclude || []), "src/tests", "src/**/*.test.ts"])],
   }))
 
-  await modifyJsonFile<Eslintrc>(targetDir, ".eslintrc.json", eslintRc => ({
+  await modifyJsonFile<Eslintrc>(config, ".eslintrc.json", eslintRc => ({
     ...eslintRc,
     extends: [...new Set([...(eslintRc.extends || []), "plugin:jest/recommended"])],
     rules: {
@@ -42,9 +43,9 @@ export const addJest = async (targetDir: string, packageManager: PackageManager)
     },
   }))
 
-  await addScriptToPackage(targetDir, "test", "jest")
+  await addScriptToPackage(config, "test", "jest")
 
-  await commitWithAuthor(targetDir, "Install jest")
+  await commitWithAuthor(config, "Install jest")
 }
 
 const generateExampleTest = () => {

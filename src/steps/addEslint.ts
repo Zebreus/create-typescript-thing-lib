@@ -1,12 +1,13 @@
 import { addScriptToPackage } from "helpers/addScriptToPackage"
 import { addToGitIgnore } from "helpers/addToGitIgnore"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
+import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 
-export const addEslint = async (targetDir: string, packageManager: PackageManager) => {
-  await installPackage(targetDir, packageManager, [
+export const addEslint = async (config: Config, packageManager: PackageManager) => {
+  await installPackage(config, packageManager, [
     "eslint",
     "@types/eslint",
     "@typescript-eslint/eslint-plugin@latest",
@@ -89,10 +90,10 @@ export const addEslint = async (targetDir: string, packageManager: PackageManage
     ],
   }
 
-  await writeAndAddFile(targetDir, ".eslintrc.json", JSON.stringify(eslintRcObject, null, 2))
+  await writeAndAddFile(config, ".eslintrc.json", JSON.stringify(eslintRcObject, null, 2))
 
-  await addScriptToPackage(targetDir, "lint", "eslint --cache && tsc --noEmit")
-  await addToGitIgnore(targetDir, "eslint", ".eslintcache")
+  await addScriptToPackage(config, "lint", "eslint --cache && tsc --noEmit")
+  await addToGitIgnore(config, "eslint", ".eslintcache")
 
-  await commitWithAuthor(targetDir, "Install eslint")
+  await commitWithAuthor(config, "Install eslint")
 }

@@ -1,9 +1,10 @@
 import { addPackageJsonToGit } from "helpers/addPackageJsonToGit"
+import { Config } from "helpers/generateConfig"
 import { addPackage } from "install-pnpm-package"
 import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 
 export const installPackage = async (
-  targetDir: string,
+  config: Config,
   packageManager: PackageManager,
   packageName: string | string[],
   options?: { prod?: boolean }
@@ -11,10 +12,10 @@ export const installPackage = async (
   const packages = Array.isArray(packageName) ? packageName : [packageName]
 
   await addPackage(packages, {
-    directory: targetDir,
+    directory: config.targetDir,
     type: options?.prod ? "normal" : "dev",
     packageManager,
   })
 
-  await addPackageJsonToGit(targetDir)
+  await addPackageJsonToGit(config)
 }

@@ -1,16 +1,17 @@
 import { addScriptToPackage, appendScriptToPackage } from "helpers/addScriptToPackage"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
+import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
 import { modifyJsonConfig } from "helpers/modifyJsonFile"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 import { PackageJson } from "types-package-json"
 
-export const setupApplication = async (targetDir: string, packageManager: PackageManager, name: string) => {
-  await installPackage(targetDir, packageManager, ["@vercel/ncc"])
+export const setupApplication = async (config: Config, packageManager: PackageManager, name: string) => {
+  await installPackage(config, packageManager, ["@vercel/ncc"])
 
   await modifyJsonConfig<Omit<PackageJson, "keywords"> & { keywords?: string[] }>(
-    targetDir,
+    config,
     "package.json",
     packageJson => ({
       ...packageJson,
@@ -25,21 +26,21 @@ export const setupApplication = async (targetDir: string, packageManager: Packag
   )
 
   await appendScriptToPackage(
-    targetDir,
+    config,
     "build",
     "ncc build --out dist --minify src/index.ts && sed '1s;^;#!/usr/bin/env node\\\\n;' dist/index.js -i && chmod a+x dist/index.js"
   )
   await appendScriptToPackage(
-    targetDir,
+    config,
     "prepack",
     "rm -rf dist && ncc build --out dist --minify src/index.ts && sed '1s;^;#!/usr/bin/env node\\\\n;' dist/index.js -i && chmod a+x dist/index.js"
   )
-  await appendScriptToPackage(targetDir, "prepublish", "eslint --cache && tsc --noEmit")
-  await addScriptToPackage(targetDir, "start", "ncc run src/index.ts")
+  await appendScriptToPackage(config, "prepublish", "eslint --cache && tsc --noEmit")
+  await addScriptToPackage(config, "start", "ncc run src/index.ts")
 
-  await writeAndAddFile(targetDir, "src/index.ts", generateApplicationIndex())
+  await writeAndAddFile(config, "src/index.ts", generateApplicationIndex())
 
-  await commitWithAuthor(targetDir, "Setup project as cli application")
+  await commitWithAuthor(config, "Setup project as cli application")
 }
 
 const generateApplicationIndex = () => {

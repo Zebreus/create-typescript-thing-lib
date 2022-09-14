@@ -1,14 +1,15 @@
 import { addScriptToPackage } from "helpers/addScriptToPackage"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
+import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 
-export const addHusky = async (targetDir: string, packageManager: PackageManager) => {
-  await installPackage(targetDir, packageManager, ["husky", "pinst"])
+export const addHusky = async (config: Config, packageManager: PackageManager) => {
+  await installPackage(config, packageManager, ["husky", "pinst"])
 
   await writeAndAddFile(
-    targetDir,
+    config,
     ".husky/pre-commit",
     `#!/usr/bin/env sh
   . "$(dirname -- "$0")/_/husky.sh"
@@ -38,11 +39,11 @@ export const addHusky = async (targetDir: string, packageManager: PackageManager
     plugins: ["prettier-plugin-organize-imports"],
   }
 
-  await writeAndAddFile(targetDir, ".prettierrc.json", JSON.stringify(prettierRcObject, null, 2))
+  await writeAndAddFile(config, ".prettierrc.json", JSON.stringify(prettierRcObject, null, 2))
 
-  await addScriptToPackage(targetDir, "postinstall", "husky install")
-  await addScriptToPackage(targetDir, "prepack", "pinst --disable")
-  await addScriptToPackage(targetDir, "postpack", "pinst --enable")
+  await addScriptToPackage(config, "postinstall", "husky install")
+  await addScriptToPackage(config, "prepack", "pinst --disable")
+  await addScriptToPackage(config, "postpack", "pinst --enable")
 
-  await commitWithAuthor(targetDir, "Install husky and enable pre-commmit hook")
+  await commitWithAuthor(config, "Install husky and enable pre-commmit hook")
 }

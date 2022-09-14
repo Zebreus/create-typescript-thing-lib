@@ -1,11 +1,12 @@
 import { addScriptToPackage } from "helpers/addScriptToPackage"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
+import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 
-export const addPrettier = async (targetDir: string, packageManager: PackageManager) => {
-  await installPackage(targetDir, packageManager, ["prettier", "prettier-plugin-organize-imports"])
+export const addPrettier = async (config: Config, packageManager: PackageManager) => {
+  await installPackage(config, packageManager, ["prettier", "prettier-plugin-organize-imports"])
 
   const prettierRcObject = {
     arrowParens: "avoid",
@@ -28,9 +29,9 @@ export const addPrettier = async (targetDir: string, packageManager: PackageMana
     plugins: ["prettier-plugin-organize-imports"],
   }
 
-  await writeAndAddFile(targetDir, ".prettierrc.json", JSON.stringify(prettierRcObject, null, 2))
+  await writeAndAddFile(config, ".prettierrc.json", JSON.stringify(prettierRcObject, null, 2))
 
-  await addScriptToPackage(targetDir, "format", "prettier --write .")
+  await addScriptToPackage(config, "format", "prettier --write .")
 
-  await commitWithAuthor(targetDir, "Install prettier")
+  await commitWithAuthor(config, "Install prettier")
 }
