@@ -10,7 +10,8 @@ it("logging functions get called a few times", async () => {
       name: "test",
       type: "library",
       packageManager: "pnpm",
-      gitOrigin: "test.com",
+      gitOrigin: "git@github.com:isomorphic-git/test.empty.git",
+      gitBranch: "master",
       logger: {
         logMessage: () => {
           logMessages += 1
@@ -33,7 +34,8 @@ it("log state has all states finished", async () => {
       name: "test",
       type: "library",
       packageManager: "pnpm",
-      gitOrigin: "test.com",
+      gitOrigin: "git@github.com:isomorphic-git/test.empty.git",
+      gitBranch: "master",
       logger: {
         logState: (id, options) => {
           if (options.state) {

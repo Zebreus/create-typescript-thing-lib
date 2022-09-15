@@ -10,7 +10,8 @@ it("creates a git repo", async () => {
       name: "test",
       type: "library",
       packageManager: "pnpm",
-      gitOrigin: "test.com",
+      gitOrigin: "git@github.com:isomorphic-git/test.empty.git",
+      gitBranch: "master",
       disableGitCommits: false,
       disableGitRepo: false,
     })
@@ -29,14 +30,15 @@ it("creates no git commits if it is disabled", async () => {
       name: "test",
       type: "library",
       packageManager: "pnpm",
-      gitOrigin: "test.com",
+      gitOrigin: "git@github.com:isomorphic-git/test.empty.git",
+      gitBranch: "master",
       disableGitCommits: true,
       disableGitRepo: false,
     })
     const gitRoot = await findRoot({ fs, filepath: dir })
     expect(gitRoot).toBe(dir)
     const currentCommit = await resolveRef({ fs, dir, ref: "HEAD" }).catch(() => undefined)
-    expect(currentCommit).toBeUndefined()
+    expect(currentCommit).toBe("c03e131196f43a78888415924bcdcbf3090f3316")
   })
 }, 120000)
 
@@ -48,7 +50,8 @@ it("fails if git commits are enabled but there is no repo", async () => {
         name: "test",
         type: "library",
         packageManager: "pnpm",
-        gitOrigin: "test.com",
+        gitOrigin: "git@github.com:isomorphic-git/test.empty.git",
+        gitBranch: "master",
         disableGitCommits: false,
         disableGitRepo: true,
       })
@@ -63,7 +66,8 @@ it("creates no git repo or commits if both are disabled", async () => {
       name: "test",
       type: "library",
       packageManager: "pnpm",
-      gitOrigin: "test.com",
+      gitOrigin: "git@github.com:isomorphic-git/test.empty.git",
+      gitBranch: "master",
       disableGitCommits: true,
       disableGitRepo: true,
     })

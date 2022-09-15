@@ -22,7 +22,13 @@ describe("The structure of the generated project looks ok", () => {
   let dir = ""
   beforeAll(async () => {
     dir = await mkdtemp(resolve(tmpdir(), "cttl-test-"))
-    await createTypescriptThing({ path: dir, name: "test", type: "library", gitOrigin: "test.com" })
+    await createTypescriptThing({
+      path: dir,
+      name: "test",
+      type: "library",
+      gitOrigin: "git@github.com:isomorphic-git/test.empty.git",
+      gitBranch: "master",
+    })
   }, 120000)
 
   afterAll(async () => {
@@ -95,7 +101,13 @@ describe("The generated project seems to work", () => {
   let dir = ""
   beforeAll(async () => {
     dir = await mkdtemp(resolve(tmpdir(), "cttl-test-"))
-    await createTypescriptThing({ path: dir, name: "test", type: "library", gitOrigin: "test.com" })
+    await createTypescriptThing({
+      path: dir,
+      name: "test",
+      type: "library",
+      gitOrigin: "git@github.com:isomorphic-git/test.empty.git",
+      gitBranch: "master",
+    })
     await sh(`cd '${dir}' && npm install`)
   }, 120000)
 
@@ -121,6 +133,12 @@ describe("The generated project seems to work", () => {
 
 it("Entrypoint for debugging", async () => {
   await runInDirectory(async dir => {
-    await createTypescriptThing({ path: dir, name: "test", type: "library", gitOrigin: "test.com" })
+    await createTypescriptThing({
+      path: dir,
+      name: "test",
+      type: "library",
+      gitOrigin: "git@github.com:isomorphic-git/test.empty.git",
+      gitBranch: "master",
+    })
   })
 }, 120000)

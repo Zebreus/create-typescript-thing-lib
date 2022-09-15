@@ -9,3 +9,4 @@ Library to actually create a typescript project. Future backend for
 - [x] Add logging facility
 - [ ] Think about functions for updating existing codebases
 - [x] Add support for projects without git
+- [ ] Automatically find default branch if not specified
