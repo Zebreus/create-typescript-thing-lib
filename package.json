@@ -1,6 +1,6 @@
 {
   "name": "create-typescript-thing-lib",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "dist/index.js",
   "license": "MIT",
   "description": "The functions to actually create a typescript thing",
