@@ -10,3 +10,4 @@ Library to actually create a typescript project. Future backend for
 - [ ] Think about functions for updating existing codebases
 - [x] Add support for projects without git
 - [ ] Automatically find default branch if not specified
+- [ ] Make the wizard work offline
