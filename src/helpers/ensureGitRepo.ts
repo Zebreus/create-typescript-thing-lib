@@ -27,9 +27,6 @@ export const ensureGitRepo = async (config: Config, origin: string | undefined, 
   }
 
   if (config.gitRepo) {
-    if (!origin) {
-      throw new Error("You need to specify an origin for the new git repo")
-    }
     await createNewRepo(config, origin, mainBranch)
     return
   }
@@ -66,11 +63,17 @@ const checkExistingRepo = async (config: Config, origin: string | undefined, mai
   return
 }
 
-const createNewRepo = async (config: Config, origin: string, mainBranch: string) => {
-  const httpsGitOrigin = origin.replace(/git@([^:]+):(.+)\.git/, "https://$1/$2")
-
+const createNewRepo = async (config: Config, origin: string | undefined, mainBranch: string) => {
   config.logger.logState("gitcreate", { state: "active", text: "Initializing git repo" })
   await init({ fs, dir: config.targetDir, defaultBranch: mainBranch })
+
+  if (!origin) {
+    config.logger.logState("gitcreate", { state: "completed", text: "Initialized git repo" })
+    return
+  }
+
+  const httpsGitOrigin = origin?.replace(/git@([^:]+):(.+)\.git/, "https://$1/$2")
+
   config.logger.logState("gitcreate", { state: "active", text: "Adding git origin" })
   await addRemote({ fs, dir: config.targetDir, remote: "origin", url: httpsGitOrigin })
   config.logger.logState("gitcreate", { state: "active", text: "Pulling repo" })
