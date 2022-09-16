@@ -15,7 +15,7 @@ export const setupApplication = withStateLogger(
     completed: "Configured project as a cli application",
   },
   async (config: Config) => {
-    await installPackage(config, ["@vercel/ncc@0.34.0"])
+    await installPackage(config, ["resolve-tspaths@0.7.5"])
 
     await modifyJsonConfig<Omit<PackageJson, "keywords"> & { keywords?: string[] }>(
       config,
@@ -35,15 +35,19 @@ export const setupApplication = withStateLogger(
     await appendScriptToPackage(
       config,
       "build",
-      "ncc build --out dist --minify src/index.ts && sed '1s;^;#!/usr/bin/env node\\\\n;' dist/index.js -i && chmod a+x dist/index.js"
+      "rm -rf dist && tsc --project tsconfig.build.json && resolve-tspaths -p tsconfig.build.json && sed '1s;^;#!/usr/bin/env node\\\\n;' dist/index.js -i && chmod a+x dist/index.js"
     )
     await appendScriptToPackage(
       config,
       "prepack",
-      "rm -rf dist && ncc build --out dist --minify src/index.ts && sed '1s;^;#!/usr/bin/env node\\\\n;' dist/index.js -i && chmod a+x dist/index.js"
+      "rm -rf dist && tsc --project tsconfig.build.json && resolve-tspaths -p tsconfig.build.json && sed '1s;^;#!/usr/bin/env node\\\\n;' dist/index.js -i && chmod a+x dist/index.js"
     )
     await appendScriptToPackage(config, "prepublish", "eslint --cache && tsc --noEmit")
-    await addScriptToPackage(config, "start", "ncc run src/index.ts")
+    await addScriptToPackage(
+      config,
+      "start",
+      "tsc --incremental --project tsconfig.build.json && resolve-tspaths -p tsconfig.build.json && node dist/index.js"
+    )
 
     await writeAndAddFile(config, "src/index.ts", generateApplicationIndex())
 
