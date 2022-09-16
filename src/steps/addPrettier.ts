@@ -6,7 +6,7 @@ import { withStateLogger } from "helpers/withStateLogger"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 
 export const addPrettier = withStateLogger({ id: "prettier" }, async (config: Config) => {
-  await installPackage(config, ["prettier", "prettier-plugin-organize-imports"])
+  await installPackage(config, ["prettier@2.7.1", "prettier-plugin-organize-imports@3.1.1"])
 
   const prettierRcObject = {
     arrowParens: "avoid",

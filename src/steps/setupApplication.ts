@@ -15,7 +15,7 @@ export const setupApplication = withStateLogger(
     completed: "Configured project as a cli application",
   },
   async (config: Config) => {
-    await installPackage(config, ["@vercel/ncc"])
+    await installPackage(config, ["@vercel/ncc@0.34.0"])
 
     await modifyJsonConfig<Omit<PackageJson, "keywords"> & { keywords?: string[] }>(
       config,

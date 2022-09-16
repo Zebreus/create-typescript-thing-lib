@@ -10,7 +10,13 @@ import { writeAndAddFile } from "helpers/writeAndAddFile"
 import { Tsconfig } from "tsconfig-type"
 
 export const addJest = withStateLogger({ id: "jest" }, async (config: Config) => {
-  await installPackage(config, ["jest", "@types/jest", "ts-jest", "ts-node", "eslint-plugin-jest"])
+  await installPackage(config, [
+    "jest@29.0.3",
+    "@types/jest@29.0.3",
+    "ts-jest@29.0.1",
+    "ts-node@10.9.1",
+    "eslint-plugin-jest@27.0.4",
+  ])
 
   const jestConfigObject = {
     roots: ["<rootDir>/src"],

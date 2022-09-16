@@ -15,7 +15,7 @@ export const setupLibrary = withStateLogger(
     completed: "Configured project as library",
   },
   async (config: Config) => {
-    await installPackage(config, ["resolve-tspaths"])
+    await installPackage(config, ["resolve-tspaths@0.7.5"])
 
     await modifyJsonConfig<Omit<PackageJson, "keywords"> & { keywords?: string[] }>(
       config,
