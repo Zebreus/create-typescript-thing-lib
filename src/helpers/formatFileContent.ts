@@ -1,6 +1,4 @@
 import { format, getFileInfo } from "prettier"
-// @ts-expect-error: No definition available
-import prettierPluginOrganizeImports from "prettier-plugin-organize-imports"
 
 export const formatFileContent = async (content: string, file: string) => {
   const transformedFile = file.endsWith("pre-commit") ? file + ".sh" : file
@@ -27,7 +25,6 @@ export const formatFileContent = async (content: string, file: string) => {
     trailingComma: "es5",
     useTabs: false,
     vueIndentScriptAndStyle: false,
-    plugins: [prettierPluginOrganizeImports],
   })
   return formattedContent
 }
