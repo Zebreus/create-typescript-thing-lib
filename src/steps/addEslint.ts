@@ -8,8 +8,8 @@ import { writeAndAddFile } from "helpers/writeAndAddFile"
 
 export const addEslint = withStateLogger({ id: "eslint" }, async (config: Config) => {
   await installPackage(config, [
-    "eslint@8.4.6",
-    "@types/eslint@8.23.1",
+    "eslint@8.23.1",
+    "@types/eslint@8.4.6",
     "@typescript-eslint/eslint-plugin@5.37.0",
     "@typescript-eslint/parser@5.37.0",
     "eslint-plugin-import@2.26.0",
