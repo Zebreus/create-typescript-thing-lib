@@ -39,7 +39,16 @@ export const initializeProject = withStateLogger(
 
     await writeAndAddFile(config, "package.json", JSON.stringify(packageJson, null, 2))
 
-    await addToGitIgnore(config, "node", ["node_modules", "yarn-error.log"])
+    await addToGitIgnore(config, "node", [
+      "node_modules",
+      "logs",
+      "*.log",
+      "npm-debug.log*",
+      "yarn-debug.log*",
+      "yarn-error.log*",
+      "lerna-debug.log*",
+      ".pnpm-debug.log*",
+    ])
 
     await commitWithAuthor(config, "Initialize node project")
   }
