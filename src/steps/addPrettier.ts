@@ -14,7 +14,7 @@ export const addPrettier = withStateLogger({ id: "prettier" }, async (config: Co
     embeddedLanguageFormatting: "auto",
     htmlWhitespaceSensitivity: "css",
     insertPragma: false,
-    jsxBracketSameLine: false,
+    bracketSameLine: false,
     jsxSingleQuote: false,
     printWidth: 120,
     proseWrap: "always",
