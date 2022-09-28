@@ -30,3 +30,17 @@ it("can launch the cli application", async () => {
     expect(result.stdout).toContain("You launched the application!")
   })
 }, 120000)
+
+it("passes the linter task", async () => {
+  await runInDirectory(async dir => {
+    await createTypescriptThing({
+      path: dir,
+      name: "test",
+      type: "application",
+      gitOrigin: "git@github.com:isomorphic-git/test.empty.git",
+      gitBranch: "master",
+      packageManager: "pnpm",
+    })
+    await expect(sh(`cd ${dir} ; nix develop --command pnpm lint`)).resolves.toBeTruthy()
+  })
+}, 120000)
