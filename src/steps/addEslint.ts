@@ -125,7 +125,11 @@ export const addEslint = withStateLogger({ id: "eslint" }, async (config: Config
 
   await writeAndAddFile(config, ".eslintrc.json", JSON.stringify(eslintRcObject, null, 2))
 
-  await addScriptToPackage(config, "lint", "eslint --cache && tsc --noEmit")
+  await addScriptToPackage(
+    config,
+    "lint",
+    "eslint --cache --ignore-path .gitignore --ext ts,js,tsx,jsx . && tsc --noEmit"
+  )
   await addToGitIgnore(config, "eslint", ".eslintcache")
 
   await commitWithAuthor(config, "Install eslint")
