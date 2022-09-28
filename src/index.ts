@@ -13,6 +13,7 @@ import { addVscodeSettings } from "steps/addVscodeSettings"
 import { initializeProject } from "steps/initializeProject"
 import { setupApplication } from "steps/setupApplication"
 import { setupLibrary } from "steps/setupLibrary"
+import { setupReactComponent } from "steps/setupReactComponent"
 
 export type Logger = {
   logMessage: (message: string, options: { type?: "info" | "error" | "warning" | "success" }) => void
@@ -23,7 +24,7 @@ export type Options = {
   path: string
   name: string
   description?: string
-  type: "library" | "application"
+  type: "library" | "application" | "reactcomponent"
   authorName?: string
   authorEmail?: string
   /** Select the flavor of lockfiles you want. Also the nix file will install this packagemanager.
@@ -66,6 +67,9 @@ export const createTypescriptThing = async (options: Options) => {
     }
     if (type === "application") {
       await setupApplication(config)
+    }
+    if (type === "reactcomponent") {
+      await setupReactComponent(config)
     }
     config.logger.logMessage("Created typescript thing successfully", { type: "success" })
   } catch (e: unknown) {
