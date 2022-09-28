@@ -12,7 +12,7 @@ it("can enter nix shell", async () => {
       gitBranch: "master",
       packageManager: "pnpm",
     })
-    await sh(`nix develop --command true`)
+    await expect(sh(`nix develop --command true`)).resolves.toBeTruthy()
   })
 }, 120000)
 

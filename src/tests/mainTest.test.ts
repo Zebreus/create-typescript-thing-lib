@@ -140,5 +140,6 @@ it("Entrypoint for debugging", async () => {
       gitOrigin: "git@github.com:isomorphic-git/test.empty.git",
       gitBranch: "master",
     })
+    expect(true).toBeTruthy()
   })
 }, 120000)
