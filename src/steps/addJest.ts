@@ -66,7 +66,7 @@ const generateExampleTest = () => {
 const generateJestConfig = () => {
   return `import { resolveTsModuleNames } from "@zebreus/resolve-tspaths/jest"
 
-export default {
+const config = {
   roots: ["<rootDir>/src"],
   moduleDirectories: ["node_modules", "src"],
   extensionsToTreatAsEsm: [".ts"],
@@ -84,5 +84,7 @@ export default {
       statements: 95,
     },
   },
-}`
+}
+
+export default config`
 }
