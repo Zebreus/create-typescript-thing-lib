@@ -36,7 +36,7 @@ describe("The structure of the generated project looks ok", () => {
   })
 
   it("Creates a nix shell file", async () => {
-    const file = await loadExistingFile(testConfig(dir), "shell.nix")
+    const file = await loadExistingFile(testConfig(dir), "flake.nix")
     expect(file).toBeTruthy()
   })
 
