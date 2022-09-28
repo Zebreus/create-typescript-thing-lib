@@ -15,7 +15,7 @@ export const setupLibrary = withStateLogger(
     completed: "Configured project as library",
   },
   async (config: Config) => {
-    await installPackage(config, ["resolve-tspaths@0.7.5"])
+    await installPackage(config, ["@zebreus/resolve-tspaths@0.8.6"])
 
     await modifyJsonConfig<Omit<PackageJson, "keywords"> & { keywords?: string[] }>(
       config,
@@ -31,13 +31,14 @@ export const setupLibrary = withStateLogger(
     await appendScriptToPackage(
       config,
       "build",
-      "tsc --project tsconfig.build.json && resolve-tspaths -p tsconfig.build.json"
+      "rm -rf dist && tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json"
     )
     await appendScriptToPackage(
       config,
       "prepack",
-      "rm -rf dist && tsc --project tsconfig.build.json && resolve-tspaths -p tsconfig.build.json"
+      "rm -rf dist && tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json"
     )
+
     await appendScriptToPackage(config, "prepublish", "eslint --cache && tsc --noEmit")
 
     await writeAndAddFile(config, "src/index.ts", generateLibraryIndex())

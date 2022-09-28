@@ -13,7 +13,7 @@ export const addTypescript = withStateLogger({ id: "TypeScript" }, async (config
       target: "es2016",
       lib: ["es2016", "esnext"],
       jsx: "preserve",
-      module: "commonjs",
+      module: "esnext",
       allowJs: true,
       declaration: true,
       declarationMap: true,

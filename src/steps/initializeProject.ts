@@ -35,6 +35,7 @@ export const initializeProject = withStateLogger(
       ...(authorName || authorEmail ? { author: { name: authorName, email: authorEmail } } : {}),
       repository: repositoryInformation,
       license,
+      type: "module",
     }
 
     await writeAndAddFile(config, "package.json", JSON.stringify(packageJson, null, 2))

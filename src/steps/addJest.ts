@@ -1,5 +1,4 @@
 import { Eslintrc } from "eslintrc-type"
-import { addCommonJsExportFile } from "helpers/addJsExportFile"
 import { addScriptToPackage } from "helpers/addScriptToPackage"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
@@ -16,22 +15,10 @@ export const addJest = withStateLogger({ id: "jest" }, async (config: Config) =>
     "ts-jest@29.0.1",
     "ts-node@10.9.1",
     "eslint-plugin-jest@27.0.4",
+    "@zebreus/resolve-tspaths@0.8.6",
   ])
 
-  const jestConfigObject = {
-    roots: ["<rootDir>/src"],
-    moduleDirectories: ["node_modules", "src"],
-    transform: {
-      "^.+\\.tsx?$": "ts-jest",
-    },
-    coverageThreshold: {
-      global: {
-        statements: 95,
-      },
-    },
-  }
-
-  await addCommonJsExportFile(config, "jest.config.js", jestConfigObject)
+  await writeAndAddFile(config, "jest.config.js", generateJestConfig())
 
   await writeAndAddFile(config, "src/tests/example.test.ts", generateExampleTest())
 
@@ -74,4 +61,28 @@ const generateExampleTest = () => {
       // eslint-disable-next-line jest/no-export
       export {}
     `
+}
+
+const generateJestConfig = () => {
+  return `import { resolveTsModuleNames } from "@zebreus/resolve-tspaths/jest"
+
+export default {
+  roots: ["<rootDir>/src"],
+  moduleDirectories: ["node_modules", "src"],
+  extensionsToTreatAsEsm: [".ts"],
+  moduleNameMapper: resolveTsModuleNames("tsconfig.build.json"),
+  transform: {
+    "^.+\\.tsx?$": [
+      "ts-jest",
+      {
+        useESM: true,
+      },
+    ],
+  },
+  coverageThreshold: {
+    global: {
+      statements: 95,
+    },
+  },
+}`
 }

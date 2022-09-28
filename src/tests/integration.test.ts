@@ -1,0 +1,32 @@
+import { createTypescriptThing } from "index"
+import { sh } from "sh"
+import { runInDirectory } from "tests/runInDirectory"
+
+it("can enter nix shell", async () => {
+  await runInDirectory(async dir => {
+    await createTypescriptThing({
+      path: dir,
+      name: "test",
+      type: "application",
+      gitOrigin: "git@github.com:isomorphic-git/test.empty.git",
+      gitBranch: "master",
+      packageManager: "pnpm",
+    })
+    await sh(`nix develop --command true`)
+  })
+}, 120000)
+
+it("can launch the cli application", async () => {
+  await runInDirectory(async dir => {
+    await createTypescriptThing({
+      path: dir,
+      name: "test",
+      type: "application",
+      gitOrigin: "git@github.com:isomorphic-git/test.empty.git",
+      gitBranch: "master",
+      packageManager: "pnpm",
+    })
+    const result = await sh(`cd ${dir} ; nix develop --command pnpm start`)
+    expect(result.stdout).toContain("You launched the application!")
+  })
+}, 120000)
