@@ -93,7 +93,7 @@ export const addEslint = withStateLogger({ id: "eslint" }, async (config: Config
     },
     overrides: [
       {
-        files: ["src/**/*.[cm]?tsx?"],
+        files: ["src/**/*.ts", "src/**/*.tsx"],
         extends: [
           "eslint:recommended",
           "plugin:@typescript-eslint/eslint-recommended",
