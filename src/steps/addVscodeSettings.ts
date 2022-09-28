@@ -47,6 +47,7 @@ const generateVscodeSettings = () => {
     "editor.inlineSuggest.enabled": true,
     "typescript.updateImportsOnFileMove.enabled": "always",
     "eslint.packageManager": "yarn",
+    "eslint.validate": ["javascript", "typescript", "html", "javascriptreact", "typescriptreact"],
     "editor.quickSuggestions": {
       strings: true,
     },
