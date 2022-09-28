@@ -12,8 +12,9 @@ export const addTypescript = withStateLogger({ id: "TypeScript" }, async (config
     compilerOptions: {
       target: "es2016",
       lib: ["es2016", "esnext"],
-      jsx: "preserve",
+      jsx: "react-jsx",
       module: "esnext",
+      moduleResolution: "node",
       allowJs: true,
       declaration: true,
       declarationMap: true,
