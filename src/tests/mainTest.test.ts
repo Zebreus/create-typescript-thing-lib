@@ -69,7 +69,7 @@ describe("The structure of the generated project looks ok", () => {
   })
 
   it("Creates a jest config file", async () => {
-    const fileJson = await loadExistingFile(testConfig(dir), "jest.config.js")
+    const fileJson = await loadExistingFile(testConfig(dir), "jest.config.json")
     expect(fileJson).toBeTruthy()
   })
 
