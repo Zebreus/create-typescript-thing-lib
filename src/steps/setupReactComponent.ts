@@ -16,11 +16,11 @@ export const setupReactComponent = withStateLogger(
     completed: "Configured project as react component",
   },
   async (config: Config) => {
-    await installPackage(config, ["@zebreus/resolve-tspaths@0.8.9"])
+    await installPackage(config, ["@zebreus/resolve-tspaths@0.8.9", "@types/react", "@types/react-dom"])
+    await installPackage(config, ["react", "react-dom", "@emotion/react"], { prod: true })
     await installPackage(config, ["react", "react-dom"], { peer: true })
-    await installPackage(config, ["rollup", "rollup-plugin-typescript2", "@emotion/react"], { peer: true })
 
-    await writeAndAddFile(config, "rollup.config.js", generateRollupConfig())
+    // await writeAndAddFile(config, "rollup.config.js", generateRollupConfig())
 
     await modifyJsonConfig<Tsconfig>(config, "tsconfig.json", tsconfigJson => ({
       ...tsconfigJson,
@@ -42,8 +42,16 @@ export const setupReactComponent = withStateLogger(
       })
     )
 
-    await appendScriptToPackage(config, "build", "rm -rf dist && rollup -c")
-    await appendScriptToPackage(config, "prepack", "rm -rf dist && rollup -c")
+    await appendScriptToPackage(
+      config,
+      "build",
+      "rm -rf dist && tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json"
+    )
+    await appendScriptToPackage(
+      config,
+      "prepack",
+      "rm -rf dist && tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json"
+    )
 
     await writeAndAddFile(config, "src/index.ts", generateComponentIndex())
     await writeAndAddFile(config, "src/DemoButton.tsx", generateDemoButton())
@@ -61,27 +69,27 @@ const generateDemoButton = () => {
   return `export type DemoButtonProps = {
   text?: string
 }
-  export const DemoButton = ({text}: DemoButtonProps) => <button>{text ?? ""}</button>
-    `
+
+export const DemoButton = ({text}: DemoButtonProps) => <button>{text ?? ""}</button>`
 }
 
-const generateRollupConfig = () => {
-  return `import typescript from "rollup-plugin-typescript2"
+// const generateRollupConfig = () => {
+//   return `import typescript from "rollup-plugin-typescript2"
 
-const config = {
-  input: "src/index.ts",
-  output: [
-    {
-      file: dist/index.js,
-      format: "esm",
-      exports: "named",
-      sourcemap: false,
-      strict: false,
-    },
-  ],
-  plugins: [typescript({ tsconfig: "tsconfig.build.json" })],
-  external: ["react", "react-dom", "@emotion/react", "@emotion/react/jsx-runtime"],
-}
+// const config = {
+//   input: "src/index.ts",
+//   output: [
+//     {
+//       file: "dist/index.js",
+//       format: "esm",
+//       exports: "named",
+//       sourcemap: false,
+//       strict: false,
+//     },
+//   ],
+//   plugins: [typescript({ tsconfig: "tsconfig.build.json" })],
+//   external: ["react", "react-dom", "@emotion/react", "@emotion/react/jsx-runtime"],
+// }
 
-export default config`
-}
+// export default config`
+// }
