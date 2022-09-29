@@ -43,9 +43,23 @@ export const setupLibrary = withStateLogger(
 
     await writeAndAddFile(config, "src/index.ts", generateLibraryIndex())
 
+    await writeAndAddFile(config, "src/tests/example.test.ts", generateLibraryTest())
+
     await commitWithAuthor(config, "Setup project as library")
   }
 )
+
+const generateLibraryTest = () => {
+  return `import { add, subtract } from "index"
+
+it("adds two numbers", () => {
+  expect(add(1, 2)).toBe(3)
+})
+
+it("subtracts two numbers", () => {
+  expect(subtract(1, 2)).toBe(-1)
+})`
+}
 
 const generateLibraryIndex = () => {
   return `export const add = (a: number, b: number) => a + b
