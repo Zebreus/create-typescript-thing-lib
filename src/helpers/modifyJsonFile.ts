@@ -14,3 +14,7 @@ export const modifyJsonConfig = async <T>(config: Config, file: string, modify: 
   const modified = await modify(sourceObject)
   await writeAndAddFile(config, file, JSON.stringify(modified, null, 2))
 }
+
+export const writeAndAddJsonConfig = async (config: Config, file: string, content: unknown) => {
+  await writeAndAddFile(config, file, JSON.stringify(content, null, 2))
+}

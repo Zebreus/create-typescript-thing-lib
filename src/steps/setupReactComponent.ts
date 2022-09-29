@@ -16,7 +16,7 @@ export const setupReactComponent = withStateLogger(
     completed: "Configured project as react component",
   },
   async (config: Config) => {
-    await installPackage(config, ["@zebreus/resolve-tspaths@0.8.6"])
+    await installPackage(config, ["@zebreus/resolve-tspaths@0.8.9"])
     await installPackage(config, ["react", "react-dom"], { peer: true })
     await installPackage(config, ["rollup", "rollup-plugin-typescript2", "@emotion/react"], { peer: true })
 
