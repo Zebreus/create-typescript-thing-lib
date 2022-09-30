@@ -28,8 +28,6 @@ export const setupReactComponent = withStateLogger(
     ])
     await installPackage(config, ["react", "react-dom"], { peer: true })
 
-    // await writeAndAddFile(config, "rollup.config.js", generateRollupConfig())
-
     await modifyJsonConfig<Tsconfig>(config, "tsconfig.json", tsconfigJson => ({
       ...tsconfigJson,
       compilerOptions: {
@@ -77,35 +75,53 @@ export const setupReactComponent = withStateLogger(
     )
 
     await writeAndAddFile(config, "src/index.ts", generateComponentIndex())
-    await writeAndAddFile(config, "src/DemoButton.tsx", generateDemoButton())
+    await writeAndAddFile(config, "src/Button.tsx", generateDemoButton())
+    await writeAndAddFile(config, "src/tests/button.test.tsx", generateButtonTest())
 
     await commitWithAuthor(config, "Setup react component")
   }
 )
 
 const generateComponentIndex = () => {
-  return `export { DemoButton } from "DemoButton"`
+  return `export { Button } from "Button"`
 }
 
 const generateDemoButton = () => {
   return `import { css } from "@emotion/react"
 
-export type DemoButtonProps = {
+export type ButtonProps = {
   text?: string
 }
-export const DemoButton = ({ text }: DemoButtonProps) => (
+export const Button = ({ text }: ButtonProps) => (
   <button
     css={css\`
-      padding: 32px;
-      background-color: hotpink;
-      font-size: 24px;
-      border-radius: 4px;
+      position: relative;
+      background-color: transparent;
+      padding: 0.4rem 0.8rem;
+      border: 2px solid #333;
+      text-align: center;
+      transition: all 0.35s;
+
       &:hover {
-        color: green;
+        color: white;
+      }
+
+      &:before {
+        position: absolute;
+        content: "";
+        inset: 0;
+        width: 0;
+        background: #ff003b;
+        transition: all 0.35s;
+        z-index: -1;
+      }
+
+      &:hover:before {
+        width: 100%;
       }
     \`}
   >
-    {text ?? "content"}
+    {text ?? ""}
   </button>
 )`
 }
@@ -115,27 +131,27 @@ const generateJestSetup = () => {
 import "@testing-library/jest-dom"`
 }
 
-// const generateButtonTest = () => {
+const generateButtonTest = () => {
+  return `import { fireEvent, render, screen } from "@testing-library/react"
+import { Button } from "Button"
 
-// }
+it("is actually a button", () => {
+  const testMessage = "Test Message"
+  render(<Button text={testMessage} />)
 
-// const generateRollupConfig = () => {
-//   return `import typescript from "rollup-plugin-typescript2"
+  expect(screen.queryByText(testMessage)).toBeInstanceOf(HTMLButtonElement)
+})
 
-// const config = {
-//   input: "src/index.ts",
-//   output: [
-//     {
-//       file: "dist/index.js",
-//       format: "esm",
-//       exports: "named",
-//       sourcemap: false,
-//       strict: false,
-//     },
-//   ],
-//   plugins: [typescript({ tsconfig: "tsconfig.build.json" })],
-//   external: ["react", "react-dom", "@emotion/react", "@emotion/react/jsx-runtime"],
-// }
+it("calls onClick on clicks", () => {
+  const onClick = jest.fn()
+  render(<Button onClick={onClick} />)
 
-// export default config`
-// }
+  const buttonElement = screen.queryByRole("button")
+  expect(buttonElement).toBeTruthy()
+  if (!buttonElement) throw new Error()
+
+  expect(onClick).toHaveBeenCalledTimes(0)
+  fireEvent.click(buttonElement)
+  expect(onClick).toHaveBeenCalledTimes(1)
+})`
+}
