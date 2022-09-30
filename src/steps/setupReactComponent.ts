@@ -5,6 +5,7 @@ import { installPackage } from "helpers/installPackage"
 import { modifyJsonConfig } from "helpers/modifyJsonFile"
 import { withStateLogger } from "helpers/withStateLogger"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
+import { Config as JestConfig } from "jest"
 import { Tsconfig } from "tsconfig-type"
 import { PackageJson } from "types-package-json"
 
@@ -16,8 +17,15 @@ export const setupReactComponent = withStateLogger(
     completed: "Configured project as react component",
   },
   async (config: Config) => {
-    await installPackage(config, ["@zebreus/resolve-tspaths@0.8.9", "@types/react", "@types/react-dom"])
     await installPackage(config, ["react", "react-dom", "@emotion/react"], { prod: true })
+    await installPackage(config, [
+      "@zebreus/resolve-tspaths@0.8.9",
+      "@types/react",
+      "@types/react-dom",
+      "jest-environment-jsdom",
+      "@testing-library/react",
+      "@testing-library/jest-dom",
+    ])
     await installPackage(config, ["react", "react-dom"], { peer: true })
 
     // await writeAndAddFile(config, "rollup.config.js", generateRollupConfig())
@@ -30,6 +38,14 @@ export const setupReactComponent = withStateLogger(
         jsxImportSource: "@emotion/react",
       },
     }))
+
+    await modifyJsonConfig<JestConfig>(config, "jest.config.json", jestConfigJson => ({
+      ...jestConfigJson,
+      testEnvironment: "jsdom",
+      setupFilesAfterEnv: [...new Set([...(jestConfigJson.setupFilesAfterEnv ?? []), "<rootDir>/jest-setup.ts"])],
+    }))
+
+    await writeAndAddFile(config, "jest-setup.ts", generateJestSetup())
 
     await modifyJsonConfig<Omit<PackageJson, "keywords"> & { keywords?: string[] }>(
       config,
@@ -61,16 +77,35 @@ export const setupReactComponent = withStateLogger(
 )
 
 const generateComponentIndex = () => {
-  return `export { DemoButton } from "DemoButton"
-    `
+  return `export { DemoButton } from "DemoButton"`
 }
 
 const generateDemoButton = () => {
-  return `export type DemoButtonProps = {
+  return `import { css } from "@emotion/react"
+
+export type DemoButtonProps = {
   text?: string
 }
+export const DemoButton = ({ text }: DemoButtonProps) => (
+  <button
+    css={css\`
+      padding: 32px;
+      background-color: hotpink;
+      font-size: 24px;
+      border-radius: 4px;
+      &:hover {
+        color: green;
+      }
+    \`}
+  >
+    {text ?? "content"}
+  </button>
+)`
+}
 
-export const DemoButton = ({text}: DemoButtonProps) => <button>{text ?? ""}</button>`
+const generateJestSetup = () => {
+  return `// eslint-disable-next-line import/no-unassigned-import
+import "@testing-library/jest-dom"`
 }
 
 // const generateRollupConfig = () => {
