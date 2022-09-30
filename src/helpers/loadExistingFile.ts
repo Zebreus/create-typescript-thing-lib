@@ -4,7 +4,7 @@ import path from "path"
 
 export const loadExistingFile = async (config: Config, fileName: string) => {
   try {
-    const buffer = await readFile(path.join(config.targetDir, fileName))
+    const buffer = await readFile(path.resolve(config.targetDir, fileName))
     return buffer.toString()
   } catch (e) {
     return undefined
