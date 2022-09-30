@@ -1,4 +1,4 @@
-import { addScriptToPackage } from "helpers/addScriptToPackage"
+import { addScriptToPackage, appendScriptToPackage } from "helpers/addScriptToPackage"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
@@ -31,7 +31,9 @@ export const addPrettier = withStateLogger({ id: "prettier" }, async (config: Co
 
   await writeAndAddFile(config, ".prettierrc.json", JSON.stringify(prettierRcObject, null, 2))
 
-  await addScriptToPackage(config, "format", "prettier --write .")
+  await addScriptToPackage(config, "format", "prettier --write . --ignore-path .gitignore")
+
+  await appendScriptToPackage(config, "lint", "prettier . --check --ignore-path .gitignore")
 
   await commitWithAuthor(config, "Install prettier")
 })

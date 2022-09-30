@@ -1,3 +1,4 @@
+import { appendScriptToPackage } from "helpers/addScriptToPackage"
 import { addToGitIgnore } from "helpers/addToGitIgnore"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
@@ -48,6 +49,18 @@ export const addTypescript = withStateLogger({ id: "TypeScript" }, async (config
     },
   }
   await writeAndAddFile(config, "tsconfig.build.json", JSON.stringify(tsConfigBuildObject, null, 2))
+
+  await appendScriptToPackage(config, "lint", "tsc --noEmit")
+  await appendScriptToPackage(
+    config,
+    "build",
+    "rm -rf dist && tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json"
+  )
+  await appendScriptToPackage(
+    config,
+    "prepack",
+    "rm -rf dist && tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json"
+  )
 
   await addToGitIgnore(config, "typescript", ["*.tsbuildinfo", "dist/"])
 

@@ -32,7 +32,7 @@ export const appendScriptToPackageContent = (packageJsonContent: string, scriptN
     ...packageJson,
     scripts: {
       ...packageJson.scripts,
-      [scriptName]: packageJson.scripts.scriptName ? `${packageJson.scripts.scriptName} && ${script}` : script,
+      [scriptName]: [packageJson?.scripts?.scriptName ?? [], script].join(" && "),
     },
   }
   return JSON.stringify(newPackage, null, 2)

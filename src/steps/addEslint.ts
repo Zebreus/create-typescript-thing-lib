@@ -1,4 +1,4 @@
-import { addScriptToPackage } from "helpers/addScriptToPackage"
+import { appendScriptToPackage } from "helpers/addScriptToPackage"
 import { addToGitIgnore } from "helpers/addToGitIgnore"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
@@ -125,11 +125,8 @@ export const addEslint = withStateLogger({ id: "eslint" }, async (config: Config
 
   await writeAndAddFile(config, ".eslintrc.json", JSON.stringify(eslintRcObject, null, 2))
 
-  await addScriptToPackage(
-    config,
-    "lint",
-    "eslint --cache --ignore-path .gitignore --ext ts,js,tsx,jsx . && tsc --noEmit"
-  )
+  await appendScriptToPackage(config, "lint", "eslint --cache --ignore-path .gitignore --ext ts,js,tsx,jsx .")
+
   await addToGitIgnore(config, "eslint", ".eslintcache")
 
   await commitWithAuthor(config, "Install eslint")

@@ -35,12 +35,12 @@ export const setupApplication = withStateLogger(
     await appendScriptToPackage(
       config,
       "build",
-      "rm -rf dist && tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json && sed '1s;^;#!/usr/bin/env node\\\\n;' dist/index.js -i && chmod a+x dist/index.js"
+      "sed '1s;^;#!/usr/bin/env node\\\\n;' dist/index.js -i && chmod a+x dist/index.js"
     )
     await appendScriptToPackage(
       config,
       "prepack",
-      "rm -rf dist && tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json && sed '1s;^;#!/usr/bin/env node\\\\n;' dist/index.js -i && chmod a+x dist/index.js"
+      "sed '1s;^;#!/usr/bin/env node\\\\n;' dist/index.js -i && chmod a+x dist/index.js"
     )
     await appendScriptToPackage(config, "prepublish", "eslint --cache && tsc --noEmit")
     await addScriptToPackage(

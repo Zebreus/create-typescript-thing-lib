@@ -28,17 +28,6 @@ export const setupLibrary = withStateLogger(
       })
     )
 
-    await appendScriptToPackage(
-      config,
-      "build",
-      "rm -rf dist && tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json"
-    )
-    await appendScriptToPackage(
-      config,
-      "prepack",
-      "rm -rf dist && tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json"
-    )
-
     await appendScriptToPackage(config, "prepublish", "eslint --cache && tsc --noEmit")
 
     await writeAndAddFile(config, "src/index.ts", generateLibraryIndex())

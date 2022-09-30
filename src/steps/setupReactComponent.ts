@@ -1,4 +1,3 @@
-import { appendScriptToPackage } from "helpers/addScriptToPackage"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
@@ -61,17 +60,6 @@ export const setupReactComponent = withStateLogger(
         keywords: [...new Set([...(packageJson.keywords || []), "react", "component"])],
         main: "dist/index.js",
       })
-    )
-
-    await appendScriptToPackage(
-      config,
-      "build",
-      "rm -rf dist && tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json"
-    )
-    await appendScriptToPackage(
-      config,
-      "prepack",
-      "rm -rf dist && tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json"
     )
 
     await writeAndAddFile(config, "src/index.ts", generateComponentIndex())
