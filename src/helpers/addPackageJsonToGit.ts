@@ -1,5 +1,6 @@
 import fs from "fs"
 import { access } from "fs/promises"
+import { formatFile } from "helpers/formatFileContent"
 import { Config } from "helpers/generateConfig"
 import { add } from "isomorphic-git"
 import { relative, resolve } from "path"
@@ -18,6 +19,8 @@ export const addPackageJsonToGit = async (config: Config) => {
         .catch(() => false),
     }))
   const filePaths = (await Promise.all(filePathPromises)).filter(({ exists }) => exists).map(({ path }) => path)
+
+  await Promise.all(filePaths.map(path => formatFile(config, path)))
 
   await Promise.all(
     filePaths.map(

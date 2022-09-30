@@ -1,3 +1,6 @@
+import { Config } from "helpers/generateConfig"
+import { loadExistingFile } from "helpers/loadExistingFile"
+import { writeAndAddFile } from "helpers/writeAndAddFile"
 import { format, getFileInfo } from "prettier"
 
 export const formatFileContent = async (content: string, file: string) => {
@@ -13,7 +16,7 @@ export const formatFileContent = async (content: string, file: string) => {
     embeddedLanguageFormatting: "auto",
     htmlWhitespaceSensitivity: "css",
     insertPragma: false,
-    jsxBracketSameLine: false,
+    bracketSameLine: false,
     jsxSingleQuote: false,
     printWidth: 120,
     proseWrap: "always",
@@ -27,4 +30,14 @@ export const formatFileContent = async (content: string, file: string) => {
     vueIndentScriptAndStyle: false,
   })
   return formattedContent
+}
+
+export const formatFile = async (config: Config, file: string) => {
+  const content = await loadExistingFile(config, file).catch(() => undefined)
+  if (!content) return
+
+  const formattedContent = await formatFileContent(content, file)
+  if (formattedContent === content) return
+
+  await writeAndAddFile(config, file, formattedContent)
 }
