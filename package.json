@@ -39,7 +39,7 @@
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache --ext ts,js,tsx,jsx . --ignore-path .gitignore && tsc --noEmit",
-    "test": "jest",
+    "test": "jest --runInBand",
     "postinstall": "husky install",
     "prepack": "pinst --disable && rm -rf dist && tsc --project tsconfig.build.json && resolve-tspaths -p tsconfig.build.json",
     "postpack": "pinst --enable",
