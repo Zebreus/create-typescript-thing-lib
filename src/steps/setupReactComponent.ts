@@ -91,8 +91,9 @@ const generateDemoButton = () => {
 
 export type ButtonProps = {
   text?: string
+  onClick?: () => void
 }
-export const Button = ({ text }: ButtonProps) => (
+export const Button = ({ text, onClick }: ButtonProps) => (
   <button
     css={css\`
       position: relative;
@@ -120,6 +121,7 @@ export const Button = ({ text }: ButtonProps) => (
         width: 100%;
       }
     \`}
+    onClick={onClick}
   >
     {text ?? ""}
   </button>
