@@ -31,9 +31,9 @@ export const addPrettier = withStateLogger({ id: "prettier" }, async (config: Co
 
   await writeAndAddFile(config, ".prettierrc.json", JSON.stringify(prettierRcObject, null, 2))
 
-  await addScriptToPackage(config, "format", "prettier --write . --ignore-path .gitignore")
+  await addScriptToPackage(config, "format", "prettier --write .")
 
-  await appendScriptToPackage(config, "lint", "prettier . --check --ignore-path .gitignore")
+  await appendScriptToPackage(config, "lint", "prettier . --check")
 
   await commitWithAuthor(config, "Install prettier")
 })
