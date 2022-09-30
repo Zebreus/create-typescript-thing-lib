@@ -20,29 +20,6 @@ export const addHusky = withStateLogger(
       { executable: true }
     )
 
-    const prettierRcObject = {
-      arrowParens: "avoid",
-      bracketSpacing: true,
-      embeddedLanguageFormatting: "auto",
-      htmlWhitespaceSensitivity: "css",
-      insertPragma: false,
-      jsxBracketSameLine: false,
-      jsxSingleQuote: false,
-      printWidth: 120,
-      proseWrap: "always",
-      quoteProps: "consistent",
-      requirePragma: false,
-      semi: false,
-      singleQuote: false,
-      tabWidth: 2,
-      trailingComma: "es5",
-      useTabs: false,
-      vueIndentScriptAndStyle: false,
-      plugins: ["prettier-plugin-organize-imports"],
-    }
-
-    await writeAndAddFile(config, ".prettierrc.json", JSON.stringify(prettierRcObject, null, 2))
-
     await addScriptToPackage(config, "postinstall", "husky install")
     await addScriptToPackage(config, "prepack", "pinst --disable")
     await addScriptToPackage(config, "postpack", "pinst --enable")
