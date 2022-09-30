@@ -39,6 +39,13 @@ export const setupReactComponent = withStateLogger(
       },
     }))
 
+    await modifyJsonConfig<{ recommendations?: string[] }>(config, ".vscode/extensions.json", extensionsConfig => ({
+      ...extensionsConfig,
+      recommendations: [
+        ...new Set([...(extensionsConfig.recommendations ?? []), "styled-components.vscode-styled-components"]),
+      ],
+    }))
+
     await modifyJsonConfig<JestConfig>(config, "jest.config.json", jestConfigJson => ({
       ...jestConfigJson,
       testEnvironment: "jsdom",
@@ -107,6 +114,10 @@ const generateJestSetup = () => {
   return `// eslint-disable-next-line import/no-unassigned-import
 import "@testing-library/jest-dom"`
 }
+
+// const generateButtonTest = () => {
+
+// }
 
 // const generateRollupConfig = () => {
 //   return `import typescript from "rollup-plugin-typescript2"
