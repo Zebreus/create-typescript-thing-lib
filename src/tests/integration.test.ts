@@ -55,6 +55,20 @@ it("passes the test task", async () => {
       gitBranch: "master",
       packageManager: "pnpm",
     })
-    await expect(sh(`cd ${dir} ; nix develop --command pnpm test`)).resolves.toBeTruthy()
+    await expect(sh(`cd ${dir} ; nix develop --command pnpm test | tee`)).resolves.toBeTruthy()
+  })
+}, 120000)
+
+it("reactcomponent passes the test task", async () => {
+  await runInDirectory(async dir => {
+    await createTypescriptThing({
+      path: dir,
+      name: "testawd",
+      type: "reactcomponent",
+      gitOrigin: "git@github.com:isomorphic-git/test.empty.git",
+      gitBranch: "master",
+      packageManager: "pnpm",
+    })
+    await expect(sh(`cd ${dir} ; nix develop --command pnpm test | tee`)).resolves.toBeTruthy()
   })
 }, 120000)
