@@ -1,4 +1,3 @@
-import { appendScriptToPackage } from "helpers/addScriptToPackage"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
@@ -27,8 +26,6 @@ export const setupLibrary = withStateLogger(
         main: "dist/index.js",
       })
     )
-
-    await appendScriptToPackage(config, "prepublish", "eslint --cache && tsc --noEmit")
 
     await writeAndAddFile(config, "src/index.ts", generateLibraryIndex())
 

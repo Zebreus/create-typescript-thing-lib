@@ -59,7 +59,7 @@ export const setupApplication = withStateLogger(
       "prepack",
       "sed '1s;^;#!/usr/bin/env node\\\\n;' dist/index.js -i && chmod a+x dist/index.js"
     )
-    await appendScriptToPackage(config, "prepublish", "eslint --cache && tsc --noEmit")
+
     await addScriptToPackage(
       config,
       "start",
