@@ -18,7 +18,7 @@ export const setupReactComponent = withStateLogger(
   async (config: Config) => {
     await installPackage(config, ["react", "react-dom", "@emotion/react"], { prod: true })
     await installPackage(config, [
-      "@zebreus/resolve-tspaths@0.8.9",
+      "@zebreus/resolve-tspaths@0.8.10",
       "@types/react",
       "@types/react-dom",
       "jest-environment-jsdom",

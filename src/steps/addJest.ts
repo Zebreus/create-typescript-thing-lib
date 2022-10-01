@@ -15,10 +15,11 @@ export const addJest = withStateLogger({ id: "jest" }, async (config: Config) =>
     "ts-jest@29.0.1",
     "ts-node@10.9.1",
     "eslint-plugin-jest@27.0.4",
-    "@zebreus/resolve-tspaths@0.8.9",
+    "@zebreus/resolve-tspaths@0.8.10",
   ])
 
   const jestConfig = {
+    extensionsToTreatAsEsm: [".ts"],
     transform: {
       "^.+.m?tsx?$": "@zebreus/resolve-tspaths/jest",
     },
@@ -47,7 +48,7 @@ export const addJest = withStateLogger({ id: "jest" }, async (config: Config) =>
     },
   }))
 
-  await addScriptToPackage(config, "test", "jest")
+  await addScriptToPackage(config, "test", "NODE_OPTIONS='--experimental-vm-modules' jest")
 
   await commitWithAuthor(config, "Install jest")
 })

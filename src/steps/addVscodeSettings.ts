@@ -52,6 +52,9 @@ const generateVscodeSettings = () => {
       strings: true,
     },
     "typescript.preferences.importModuleSpecifier": "non-relative",
+    "jest.nodeEnv": {
+      NODE_OPTIONS: "--experimental-vm-modules",
+    },
   }
 }
 
