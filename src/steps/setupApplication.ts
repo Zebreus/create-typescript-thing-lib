@@ -2,7 +2,7 @@ import { addScriptToPackage, appendScriptToPackage } from "helpers/addScriptToPa
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
-import { modifyJsonConfig } from "helpers/modifyJsonFile"
+import { modifyJsonConfig, writeAndAddJsonConfig } from "helpers/modifyJsonFile"
 import { withStateLogger } from "helpers/withStateLogger"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 import { PackageJson } from "types-package-json"
@@ -31,6 +31,23 @@ export const setupApplication = withStateLogger(
         },
       })
     )
+
+    const launchConfig = {
+      version: "0.2.0",
+      configurations: [
+        {
+          type: "node",
+          request: "launch",
+          name: "Debug application",
+          program: "${workspaceFolder}/src/index.ts",
+          runtimeArgs: ["--loader", "ts-node/esm", "--loader", "@zebreus/resolve-tspaths/esm"],
+          console: "integratedTerminal",
+          internalConsoleOptions: "openOnSessionStart",
+        },
+      ],
+    }
+
+    await writeAndAddJsonConfig(config, ".vscode/launch.json", launchConfig)
 
     await appendScriptToPackage(
       config,
