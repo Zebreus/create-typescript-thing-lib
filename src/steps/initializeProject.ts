@@ -49,7 +49,11 @@ export const initializeProject = withStateLogger(
       "yarn-error.log*",
       "lerna-debug.log*",
       ".pnpm-debug.log*",
+      "/.pnp",
+      ".pnp.js",
     ])
+
+    await addToGitIgnore(config, "misc", [".DS_Store", "*.pem"])
 
     await commitWithAuthor(config, "Initialize node project")
   }

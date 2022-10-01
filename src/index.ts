@@ -2,17 +2,20 @@ import { ensureGitRepo } from "helpers/ensureGitRepo"
 import { generateConfig } from "helpers/generateConfig"
 import { prepareTargetDir } from "helpers/prepareTargetDir"
 import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
+import { addEmotion } from "steps/addEmotion"
 import { addEslint } from "steps/addEslint"
 import { addHusky } from "steps/addHusky"
 import { addJest } from "steps/addJest"
 import { addLintStaged } from "steps/addLintStaged"
 import { addNixShell } from "steps/addNixShell"
 import { addPrettier } from "steps/addPrettier"
+import { addReact } from "steps/addReact"
 import { addTypescript } from "steps/addTypescript"
 import { addVscodeSettings } from "steps/addVscodeSettings"
 import { initializeProject } from "steps/initializeProject"
 import { setupApplication } from "steps/setupApplication"
 import { setupLibrary } from "steps/setupLibrary"
+import { setupNextJs } from "steps/setupNextJs"
 import { setupReactComponent } from "steps/setupReactComponent"
 
 export type Logger = {
@@ -24,7 +27,7 @@ export type Options = {
   path: string
   name: string
   description?: string
-  type: "library" | "application" | "reactcomponent"
+  type: "library" | "application" | "reactcomponent" | "nextjs"
   authorName?: string
   authorEmail?: string
   /** Select the flavor of lockfiles you want. Also the nix file will install this packagemanager.
@@ -62,6 +65,10 @@ export const createTypescriptThing = async (options: Options) => {
       await addHusky(config)
     }
     await addVscodeSettings(config)
+    if (type === "reactcomponent" || type === "nextjs") {
+      await addReact(config)
+      await addEmotion(config)
+    }
     if (type === "library") {
       await setupLibrary(config)
     }
@@ -70,6 +77,9 @@ export const createTypescriptThing = async (options: Options) => {
     }
     if (type === "reactcomponent") {
       await setupReactComponent(config)
+    }
+    if (type === "nextjs") {
+      await setupNextJs(config)
     }
     config.logger.logMessage("Created typescript thing successfully", { type: "success" })
   } catch (e: unknown) {

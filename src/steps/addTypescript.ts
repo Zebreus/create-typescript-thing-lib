@@ -12,6 +12,7 @@ export const addTypescript = withStateLogger({ id: "TypeScript" }, async (config
   const tsConfigObject = {
     compilerOptions: {
       target: "ES2020",
+      lib: ["ES2020"],
       module: "ES2020",
       moduleResolution: "node",
       declaration: true,
@@ -30,6 +31,7 @@ export const addTypescript = withStateLogger({ id: "TypeScript" }, async (config
       noFallthroughCasesInSwitch: true,
       noPropertyAccessFromIndexSignature: true,
       noUncheckedIndexedAccess: true,
+      resolveJsonModule: true,
       rootDir: "src",
       baseUrl: ".",
       paths: {
@@ -37,6 +39,7 @@ export const addTypescript = withStateLogger({ id: "TypeScript" }, async (config
       },
     },
     include: ["src/**/*"],
+    exclude: ["node_modules"],
   }
   await writeAndAddFile(config, "tsconfig.json", JSON.stringify(tsConfigObject, null, 2))
 

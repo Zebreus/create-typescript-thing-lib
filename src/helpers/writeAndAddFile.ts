@@ -1,8 +1,8 @@
 import fs from "fs"
-import { access, chmod, mkdir, writeFile } from "fs/promises"
+import { access, chmod, mkdir, unlink, writeFile } from "fs/promises"
 import { formatFileContent } from "helpers/formatFileContent"
 import { Config } from "helpers/generateConfig"
-import { add } from "isomorphic-git"
+import { add, remove } from "isomorphic-git"
 import { dirname, relative, resolve } from "path"
 
 export const writeAndAddFile = async (
@@ -31,4 +31,14 @@ export const writeAndAddFile = async (
   if (config.gitCommits) {
     await add({ fs, dir: config.targetDir, filepath: relative(config.targetDir, targetFile) })
   }
+}
+
+export const deleteAndAddFile = async (config: Config, file: string) => {
+  const targetFile = resolve(config.targetDir, file)
+
+  if (config.gitCommits) {
+    await remove({ fs, dir: config.targetDir, filepath: relative(config.targetDir, targetFile) }).catch(() => undefined)
+  }
+
+  await unlink(targetFile).catch(() => undefined)
 }

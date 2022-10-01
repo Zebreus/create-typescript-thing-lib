@@ -4,7 +4,6 @@ import { installPackage } from "helpers/installPackage"
 import { modifyJsonConfig } from "helpers/modifyJsonFile"
 import { withStateLogger } from "helpers/withStateLogger"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
-import { Config as JestConfig } from "jest"
 import { Tsconfig } from "tsconfig-type"
 import { PackageJson } from "types-package-json"
 
@@ -16,15 +15,7 @@ export const setupReactComponent = withStateLogger(
     completed: "Configured project as react component",
   },
   async (config: Config) => {
-    await installPackage(config, ["react", "react-dom", "@emotion/react"], { prod: true })
-    await installPackage(config, [
-      "@zebreus/resolve-tspaths@0.8.10",
-      "@types/react",
-      "@types/react-dom",
-      "jest-environment-jsdom",
-      "@testing-library/react",
-      "@testing-library/jest-dom",
-    ])
+    await installPackage(config, ["@zebreus/resolve-tspaths@0.8.10"])
     await installPackage(config, ["react", "react-dom"], { peer: true })
 
     await modifyJsonConfig<Tsconfig>(config, "tsconfig.json", tsconfigJson => ({
@@ -35,21 +26,6 @@ export const setupReactComponent = withStateLogger(
         jsxImportSource: "@emotion/react",
       },
     }))
-
-    await modifyJsonConfig<{ recommendations?: string[] }>(config, ".vscode/extensions.json", extensionsConfig => ({
-      ...extensionsConfig,
-      recommendations: [
-        ...new Set([...(extensionsConfig.recommendations ?? []), "styled-components.vscode-styled-components"]),
-      ],
-    }))
-
-    await modifyJsonConfig<JestConfig>(config, "jest.config.json", jestConfigJson => ({
-      ...jestConfigJson,
-      testEnvironment: "jsdom",
-      setupFilesAfterEnv: [...new Set([...(jestConfigJson.setupFilesAfterEnv ?? []), "<rootDir>/jest-setup.ts"])],
-    }))
-
-    await writeAndAddFile(config, "jest-setup.ts", generateJestSetup())
 
     await modifyJsonConfig<Omit<PackageJson, "keywords"> & { keywords?: string[] }>(
       config,
@@ -114,11 +90,6 @@ export const Button = ({ text, onClick }: ButtonProps) => (
     {text ?? ""}
   </button>
 )`
-}
-
-const generateJestSetup = () => {
-  return `// eslint-disable-next-line import/no-unassigned-import
-import "@testing-library/jest-dom"`
 }
 
 const generateButtonTest = () => {
