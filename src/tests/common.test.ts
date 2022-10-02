@@ -7,9 +7,9 @@ import { resolve } from "path"
 import { sh } from "sh"
 import { runInDirectory } from "tests/runInDirectory"
 
-const types = ["library", "application", "reactcomponent"] as const
+const types = ["library", "application", "reactcomponent", "nextjs"] as const
 
-const packageManager = "npm"
+const packageManager = "yarn"
 
 describe.each(types)(
   "common tests for %s",
