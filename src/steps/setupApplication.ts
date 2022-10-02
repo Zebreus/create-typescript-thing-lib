@@ -15,7 +15,7 @@ export const setupApplication = withStateLogger(
     completed: "Configured project as a cli application",
   },
   async (config: Config) => {
-    await installPackage(config, ["@zebreus/resolve-tspaths@0.8.10"])
+    await installPackage(config, ["@zebreus/resolve-tspaths"])
 
     await augmentJsonConfig<Omit<Partial<PackageJson>, "keywords"> & { keywords?: string[] }>(
       config,

@@ -15,7 +15,7 @@ export const setupReactComponent = withStateLogger(
     completed: "Configured project as react component",
   },
   async (config: Config) => {
-    await installPackage(config, ["@zebreus/resolve-tspaths@0.8.10"])
+    await installPackage(config, ["@zebreus/resolve-tspaths"])
     await installPackage(config, ["react", "react-dom"], { peer: true })
 
     await augmentJsonConfig<Tsconfig>(config, "tsconfig.json", {

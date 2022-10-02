@@ -8,7 +8,7 @@ import { writeAndAddFile } from "helpers/writeAndAddFile"
 export const addHusky = withStateLogger(
   { id: "husky", completed: "Added git hooks with husky" },
   async (config: Config) => {
-    await installPackage(config, ["husky@8.0.1", "pinst@3.0.0"])
+    await installPackage(config, ["husky", "pinst"])
 
     await writeAndAddFile(
       config,

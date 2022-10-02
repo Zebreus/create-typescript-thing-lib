@@ -6,7 +6,7 @@ import { augmentJsonConfig } from "helpers/modifyJsonFile"
 import { withStateLogger } from "helpers/withStateLogger"
 
 export const addPrettier = withStateLogger({ id: "prettier" }, async (config: Config) => {
-  await installPackage(config, ["prettier@2.7.1", "prettier-plugin-organize-imports@3.1.1"])
+  await installPackage(config, ["prettier", "prettier-plugin-organize-imports"])
 
   const prettierRcObject = {
     arrowParens: "avoid",

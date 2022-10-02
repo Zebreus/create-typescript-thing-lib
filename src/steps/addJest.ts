@@ -10,12 +10,12 @@ import { Tsconfig } from "tsconfig-type"
 
 export const addJest = withStateLogger({ id: "jest" }, async (config: Config) => {
   await installPackage(config, [
-    "jest@29.0.3",
-    "@types/jest@29.0.3",
-    "ts-jest@29.0.1",
-    "ts-node@10.9.1",
-    "eslint-plugin-jest@27.0.4",
-    "@zebreus/resolve-tspaths@0.8.10",
+    "jest",
+    "@types/jest",
+    "ts-jest",
+    "ts-node",
+    "eslint-plugin-jest",
+    "@zebreus/resolve-tspaths",
   ])
 
   const jestConfig = {

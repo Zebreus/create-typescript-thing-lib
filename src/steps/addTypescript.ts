@@ -8,7 +8,7 @@ import { withStateLogger } from "helpers/withStateLogger"
 import { Tsconfig } from "tsconfig-type"
 
 export const addTypescript = withStateLogger({ id: "TypeScript" }, async (config: Config) => {
-  await installPackage(config, ["typescript@4.8.3", "@types/node@18.7.18"])
+  await installPackage(config, ["typescript", "@types/node"])
 
   const tsConfigObject: Tsconfig = {
     compilerOptions: {

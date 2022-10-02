@@ -7,7 +7,7 @@ import { withStateLogger } from "helpers/withStateLogger"
 export const addLintStaged = withStateLogger(
   { id: "lint staged", message: "Setting up linting for staged files" },
   async (config: Config) => {
-    await installPackage(config, ["lint-staged@13.0.3", "tsc-files@1.1.3"])
+    await installPackage(config, ["lint-staged", "tsc-files"])
 
     const lintStagedRcObject = {
       "*.+(ts|tsx)": ["prettier --write", "eslint --cache --fix", "tsc-files --noEmit"],

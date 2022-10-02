@@ -14,7 +14,7 @@ export const setupLibrary = withStateLogger(
     completed: "Configured project as library",
   },
   async (config: Config) => {
-    await installPackage(config, ["@zebreus/resolve-tspaths@0.8.10"])
+    await installPackage(config, ["@zebreus/resolve-tspaths"])
 
     await augmentJsonConfig<Omit<Partial<PackageJson>, "keywords"> & { keywords?: string[] }>(config, "package.json", {
       files: ["dist/**"],
