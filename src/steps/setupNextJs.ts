@@ -27,7 +27,6 @@ export const setupNextJs = withStateLogger(
         jsx: "preserve",
         incremental: true,
         allowJs: false,
-        jsxImportSource: undefined,
       },
       include: ["next-env.d.ts", "next.config.js"],
     })
