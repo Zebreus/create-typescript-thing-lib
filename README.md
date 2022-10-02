@@ -8,6 +8,9 @@ Library to actually create a typescript project. Future backend for
 - [x] Add more tests
 - [x] Add logging facility
 - [ ] Think about functions for updating existing codebases
+  - [ ] Centralize package versions
+  - [ ] Move steps to a tag based system
+  - [ ] Add information about the project to the project
 - [x] Add support for projects without git
 - [ ] Automatically find default branch if not specified
 - [ ] Make the wizard work offline
