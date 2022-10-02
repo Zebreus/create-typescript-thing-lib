@@ -3,7 +3,7 @@ import { addScriptToPackage } from "helpers/addScriptToPackage"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
-import { modifyJsonConfig as modifyJsonFile, writeAndAddJsonConfig } from "helpers/modifyJsonFile"
+import { augmentJsonConfig } from "helpers/modifyJsonFile"
 import { withStateLogger } from "helpers/withStateLogger"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 import { Tsconfig } from "tsconfig-type"
@@ -30,23 +30,24 @@ export const addJest = withStateLogger({ id: "jest" }, async (config: Config) =>
     },
   }
 
-  await writeAndAddJsonConfig(config, "jest.config.json", jestConfig)
+  await augmentJsonConfig(config, "jest.config.json", jestConfig)
 
   await writeAndAddFile(config, "src/tests/example.test.ts", generateExampleTest())
 
-  await modifyJsonFile<Tsconfig>(config, "tsconfig.build.json", tsConfig => ({
-    ...tsConfig,
-    exclude: [...new Set([...(tsConfig.exclude || []), "src/tests", "src/**/*.test.ts"])],
-  }))
+  await augmentJsonConfig<Tsconfig>(config, "tsconfig.build.json", {
+    exclude: ["src/tests", "src/**/*.test.ts"],
+  })
 
-  await modifyJsonFile<Eslintrc>(config, ".eslintrc.json", eslintRc => ({
-    ...eslintRc,
-    extends: [...new Set([...(eslintRc.extends || []), "plugin:jest/recommended"])],
+  await augmentJsonConfig<
+    Eslintrc & {
+      rules?: Record<string, unknown>
+    }
+  >(config, ".eslintrc.json", {
+    extends: ["plugin:jest/recommended"],
     rules: {
-      ...(eslintRc.rules || {}),
       "jest/expect-expect": "off",
     },
-  }))
+  })
 
   await addScriptToPackage(config, "test", "NODE_OPTIONS='--experimental-vm-modules' jest")
 

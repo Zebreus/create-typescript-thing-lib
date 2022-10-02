@@ -2,7 +2,7 @@ import { addScriptToPackage, appendScriptToPackage } from "helpers/addScriptToPa
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
-import { modifyJsonConfig, writeAndAddJsonConfig } from "helpers/modifyJsonFile"
+import { augmentJsonConfig } from "helpers/modifyJsonFile"
 import { withStateLogger } from "helpers/withStateLogger"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 import { PackageJson } from "types-package-json"
@@ -17,17 +17,15 @@ export const setupApplication = withStateLogger(
   async (config: Config) => {
     await installPackage(config, ["@zebreus/resolve-tspaths@0.8.10"])
 
-    await modifyJsonConfig<Omit<PackageJson, "keywords"> & { keywords?: string[] }>(
+    await augmentJsonConfig<Omit<Partial<PackageJson>, "keywords"> & { keywords?: string[] }>(
       config,
       "package.json",
-      packageJson => ({
-        ...packageJson,
-        files: [...new Set([...(packageJson.files || []), "dist/**"])],
-        keywords: [...new Set([...(packageJson.keywords || []), "cli", "application", "interactive"])],
+      oldConfig => ({
+        files: ["dist/**"],
+        keywords: ["cli", "application", "interactive"],
         main: "dist/index.js",
         bin: {
-          ...(packageJson.bin || {}),
-          [packageJson.name]: "dist/index.js",
+          [oldConfig.name || "unknown"]: "dist/index.js",
         },
       })
     )
@@ -47,7 +45,7 @@ export const setupApplication = withStateLogger(
       ],
     }
 
-    await writeAndAddJsonConfig(config, ".vscode/launch.json", launchConfig)
+    await augmentJsonConfig(config, ".vscode/launch.json", launchConfig)
 
     await appendScriptToPackage(
       config,

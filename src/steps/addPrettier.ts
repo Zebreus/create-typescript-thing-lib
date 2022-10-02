@@ -2,8 +2,8 @@ import { addScriptToPackage, appendScriptToPackage } from "helpers/addScriptToPa
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
+import { augmentJsonConfig } from "helpers/modifyJsonFile"
 import { withStateLogger } from "helpers/withStateLogger"
-import { writeAndAddFile } from "helpers/writeAndAddFile"
 
 export const addPrettier = withStateLogger({ id: "prettier" }, async (config: Config) => {
   await installPackage(config, ["prettier@2.7.1", "prettier-plugin-organize-imports@3.1.1"])
@@ -29,7 +29,7 @@ export const addPrettier = withStateLogger({ id: "prettier" }, async (config: Co
     plugins: ["prettier-plugin-organize-imports"],
   }
 
-  await writeAndAddFile(config, ".prettierrc.json", JSON.stringify(prettierRcObject, null, 2))
+  await augmentJsonConfig(config, ".prettierrc.json", prettierRcObject)
 
   await addScriptToPackage(config, "format", "prettier --write .")
 

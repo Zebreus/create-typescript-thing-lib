@@ -1,6 +1,6 @@
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
-import { writeAndAddJsonConfig } from "helpers/modifyJsonFile"
+import { augmentJsonConfig } from "helpers/modifyJsonFile"
 import { withStateLogger } from "helpers/withStateLogger"
 
 export const addVscodeSettings = withStateLogger(
@@ -10,8 +10,8 @@ export const addVscodeSettings = withStateLogger(
     completed: "Added vscode recommendations",
   },
   async (config: Config) => {
-    await writeAndAddJsonConfig(config, ".vscode/settings.json", generateVscodeSettings())
-    await writeAndAddJsonConfig(config, ".vscode/extensions.json", generateVscodeExtensions())
+    await augmentJsonConfig(config, ".vscode/settings.json", generateVscodeSettings())
+    await augmentJsonConfig(config, ".vscode/extensions.json", generateVscodeExtensions())
 
     await commitWithAuthor(config, "Add vscode settings")
   }

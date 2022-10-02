@@ -1,8 +1,8 @@
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
+import { augmentJsonConfig } from "helpers/modifyJsonFile"
 import { withStateLogger } from "helpers/withStateLogger"
-import { writeAndAddFile } from "helpers/writeAndAddFile"
 
 export const addLintStaged = withStateLogger(
   { id: "lint staged", message: "Setting up linting for staged files" },
@@ -15,7 +15,7 @@ export const addLintStaged = withStateLogger(
       "*.+(json|css|md|yml|yaml|scss)": ["prettier --write"],
     }
 
-    await writeAndAddFile(config, ".lintstagedrc.json", JSON.stringify(lintStagedRcObject, null, 2))
+    await augmentJsonConfig(config, ".lintstagedrc.json", lintStagedRcObject)
 
     await commitWithAuthor(config, "Install lint-staged")
   }

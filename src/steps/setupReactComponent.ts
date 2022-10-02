@@ -1,7 +1,7 @@
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
-import { modifyJsonConfig } from "helpers/modifyJsonFile"
+import { augmentJsonConfig } from "helpers/modifyJsonFile"
 import { withStateLogger } from "helpers/withStateLogger"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 import { Tsconfig } from "tsconfig-type"
@@ -18,25 +18,18 @@ export const setupReactComponent = withStateLogger(
     await installPackage(config, ["@zebreus/resolve-tspaths@0.8.10"])
     await installPackage(config, ["react", "react-dom"], { peer: true })
 
-    await modifyJsonConfig<Tsconfig>(config, "tsconfig.json", tsconfigJson => ({
-      ...tsconfigJson,
+    await augmentJsonConfig<Tsconfig>(config, "tsconfig.json", {
       compilerOptions: {
-        ...tsconfigJson.compilerOptions,
         jsx: "react-jsx",
         jsxImportSource: "@emotion/react",
       },
-    }))
+    })
 
-    await modifyJsonConfig<Omit<PackageJson, "keywords"> & { keywords?: string[] }>(
-      config,
-      "package.json",
-      packageJson => ({
-        ...packageJson,
-        files: [...new Set([...(packageJson.files || []), "dist/**"])],
-        keywords: [...new Set([...(packageJson.keywords || []), "react", "component"])],
-        main: "dist/index.js",
-      })
-    )
+    await augmentJsonConfig<Omit<Partial<PackageJson>, "keywords"> & { keywords?: string[] }>(config, "package.json", {
+      files: ["dist/**"],
+      keywords: ["react", "component"],
+      main: "dist/index.js",
+    })
 
     await writeAndAddFile(config, "src/index.ts", generateComponentIndex())
     await writeAndAddFile(config, "src/Button.tsx", generateDemoButton())

@@ -3,18 +3,19 @@ import { addToGitIgnore } from "helpers/addToGitIgnore"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
+import { augmentJsonConfig } from "helpers/modifyJsonFile"
 import { withStateLogger } from "helpers/withStateLogger"
-import { writeAndAddFile } from "helpers/writeAndAddFile"
+import { Tsconfig } from "tsconfig-type"
 
 export const addTypescript = withStateLogger({ id: "TypeScript" }, async (config: Config) => {
   await installPackage(config, ["typescript@4.8.3", "@types/node@18.7.18"])
 
-  const tsConfigObject = {
+  const tsConfigObject: Tsconfig = {
     compilerOptions: {
       target: "ES2020",
       lib: ["ES2020"],
       module: "ES2020",
-      moduleResolution: "node",
+      moduleResolution: "Node",
       declaration: true,
       declarationMap: true,
       sourceMap: true,
@@ -41,9 +42,9 @@ export const addTypescript = withStateLogger({ id: "TypeScript" }, async (config
     include: ["src/**/*"],
     exclude: ["node_modules"],
   }
-  await writeAndAddFile(config, "tsconfig.json", JSON.stringify(tsConfigObject, null, 2))
+  await augmentJsonConfig<Tsconfig>(config, "tsconfig.json", tsConfigObject)
 
-  const tsConfigBuildObject = {
+  const tsConfigBuildObject: Tsconfig = {
     extends: "./tsconfig.json",
     compilerOptions: {
       noEmit: false,
@@ -51,7 +52,7 @@ export const addTypescript = withStateLogger({ id: "TypeScript" }, async (config
       declarationMap: false,
     },
   }
-  await writeAndAddFile(config, "tsconfig.build.json", JSON.stringify(tsConfigBuildObject, null, 2))
+  await augmentJsonConfig(config, "tsconfig.build.json", tsConfigBuildObject)
 
   await appendScriptToPackage(config, "lint", "tsc --noEmit")
   await appendScriptToPackage(

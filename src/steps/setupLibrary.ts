@@ -1,7 +1,7 @@
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
-import { modifyJsonConfig } from "helpers/modifyJsonFile"
+import { augmentJsonConfig } from "helpers/modifyJsonFile"
 import { withStateLogger } from "helpers/withStateLogger"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 import { PackageJson } from "types-package-json"
@@ -16,16 +16,11 @@ export const setupLibrary = withStateLogger(
   async (config: Config) => {
     await installPackage(config, ["@zebreus/resolve-tspaths@0.8.10"])
 
-    await modifyJsonConfig<Omit<PackageJson, "keywords"> & { keywords?: string[] }>(
-      config,
-      "package.json",
-      packageJson => ({
-        ...packageJson,
-        files: [...new Set([...(packageJson.files || []), "dist/**"])],
-        keywords: [...new Set([...(packageJson.keywords || []), "library"])],
-        main: "dist/index.js",
-      })
-    )
+    await augmentJsonConfig<Omit<Partial<PackageJson>, "keywords"> & { keywords?: string[] }>(config, "package.json", {
+      files: ["dist/**"],
+      keywords: ["library"],
+      main: "dist/index.js",
+    })
 
     await writeAndAddFile(config, "src/index.ts", generateLibraryIndex())
 

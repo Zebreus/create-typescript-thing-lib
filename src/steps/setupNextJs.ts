@@ -5,7 +5,7 @@ import { addToGitIgnore } from "helpers/addToGitIgnore"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
-import { modifyJsonConfig } from "helpers/modifyJsonFile"
+import { augmentJsonConfig } from "helpers/modifyJsonFile"
 import { withStateLogger } from "helpers/withStateLogger"
 import { deleteAndAddFile, writeAndAddFile } from "helpers/writeAndAddFile"
 import { Tsconfig } from "tsconfig-type"
@@ -22,16 +22,15 @@ export const setupNextJs = withStateLogger(
     await installPackage(config, ["next"], { prod: true })
     await installPackage(config, ["@next/eslint-plugin-next"])
 
-    await modifyJsonConfig<Tsconfig>(config, "tsconfig.json", tsconfigJson => ({
-      ...tsconfigJson,
+    await augmentJsonConfig<Tsconfig>(config, "tsconfig.json", {
       compilerOptions: {
-        ...tsconfigJson.compilerOptions,
         jsx: "preserve",
         incremental: true,
         allowJs: false,
+        jsxImportSource: undefined,
       },
-      include: [...new Set([...(tsconfigJson.include ?? []), "next-env.d.ts", "next.config.js"] as const)],
-    }))
+      include: ["next-env.d.ts", "next.config.js"],
+    })
 
     await deleteAndAddFile(config, "tsconfig.build.json")
 
@@ -43,20 +42,17 @@ export const setupNextJs = withStateLogger(
     await addESMExportFile(config, "next.config.mjs", nextConfig)
     await addToGitIgnore(config, "next", ["next-env.d.ts", ".vercel", "/.next", "/out", "/build", ".env*.local"])
 
-    await modifyJsonConfig<Omit<PackageJson, "keywords"> & { keywords?: string[] }>(
-      config,
-      "package.json",
-      packageJson => ({
-        ...packageJson,
-        keywords: [...new Set([...(packageJson.keywords || []), "nextjs"])],
-      })
-    )
+    await augmentJsonConfig<Omit<Partial<PackageJson>, "keywords"> & { keywords?: string[] }>(config, "package.json", {
+      keywords: ["nextjs"],
+    })
 
-    await modifyJsonConfig<Eslintrc>(config, ".eslintrc.json", eslintrcJson => ({
-      ...eslintrcJson,
-      extends: [...new Set([...(eslintrcJson.extends ?? []), "plugin:@next/next/core-web-vitals"])],
+    await augmentJsonConfig<
+      Eslintrc & {
+        rules?: Record<string, unknown>
+      }
+    >(config, ".eslintrc.json", {
+      extends: ["plugin:@next/next/core-web-vitals"],
       rules: {
-        ...(eslintrcJson.rules || {}),
         "jsx-a11y/alt-text": [
           "error",
           {
@@ -65,7 +61,7 @@ export const setupNextJs = withStateLogger(
           },
         ],
       },
-    }))
+    })
 
     await writeAndAddFile(config, "src/pages/index.tsx", getIndexPage())
     await writeAndAddFile(config, "src/components/Demo.tsx", getDemoComponent())

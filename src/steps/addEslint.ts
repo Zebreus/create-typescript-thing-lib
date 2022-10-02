@@ -3,8 +3,8 @@ import { addToGitIgnore } from "helpers/addToGitIgnore"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
+import { augmentJsonConfig } from "helpers/modifyJsonFile"
 import { withStateLogger } from "helpers/withStateLogger"
-import { writeAndAddFile } from "helpers/writeAndAddFile"
 
 export const addEslint = withStateLogger({ id: "eslint" }, async (config: Config) => {
   await installPackage(config, [
@@ -123,7 +123,7 @@ export const addEslint = withStateLogger({ id: "eslint" }, async (config: Config
     ],
   }
 
-  await writeAndAddFile(config, ".eslintrc.json", JSON.stringify(eslintRcObject, null, 2))
+  await augmentJsonConfig(config, ".eslintrc.json", eslintRcObject)
 
   await appendScriptToPackage(config, "lint", "eslint --cache --ignore-path .gitignore --ext ts,js,tsx,jsx .")
 
