@@ -44,7 +44,7 @@ export const getPreparedPath = async (partialOptions: Partial<TestOptions>) => {
           return dir
         }
         try {
-          await sh(`cd ${dir} ; nix develop --command ${packageManager} install`)
+          await sh(`cd ${dir} ; nix develop --command ${packageManager} install --frozen-lockfile`)
           return dir
         } catch (e) {
           await rm(dir, { recursive: true })
