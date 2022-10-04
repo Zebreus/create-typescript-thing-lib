@@ -139,6 +139,9 @@ describe.each(types)(
 
     test.concurrent("Should not fail on build script", async () =>
       runInDirectory(options, async dir => {
+        if (type === "nextjs") {
+          await sh(`cd ${dir} ; rm -rf node_modules ; nix develop --command ${packageManager} install`)
+        }
         await expect(sh(`cd ${dir} ; nix develop --command ${packageManager} run build`)).resolves.toBeTruthy()
       })
     )
