@@ -33,6 +33,7 @@ export const packageVersions = {
   "@emotion/eslint-plugin": "11.10.0",
   "next": "12.3.1",
   "@next/eslint-plugin-next": "12.3.1",
+  "@ladle/react": "2.4.3",
 } as const
 
 export type PackageName = keyof typeof packageVersions

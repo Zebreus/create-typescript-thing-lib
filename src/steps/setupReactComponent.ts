@@ -1,3 +1,4 @@
+import { addScriptToPackage } from "helpers/addScriptToPackage"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
@@ -15,7 +16,7 @@ export const setupReactComponent = withStateLogger(
     completed: "Configured project as react component",
   },
   async (config: Config) => {
-    await installPackage(config, ["@zebreus/resolve-tspaths"])
+    await installPackage(config, ["@ladle/react"])
     await installPackage(config, ["react", "react-dom"], { peer: true })
 
     await augmentJsonConfig<Tsconfig>(config, "tsconfig.json", {
@@ -23,6 +24,10 @@ export const setupReactComponent = withStateLogger(
         jsx: "react-jsx",
         jsxImportSource: "@emotion/react",
       },
+    })
+
+    await augmentJsonConfig<Tsconfig>(config, "tsconfig.build.json", {
+      exclude: ["**/*.stories.tsx?"],
     })
 
     await augmentJsonConfig<Omit<Partial<PackageJson>, "keywords"> & { keywords?: string[] }>(config, "package.json", {
@@ -34,6 +39,10 @@ export const setupReactComponent = withStateLogger(
     await writeAndAddFile(config, "src/index.ts", generateComponentIndex())
     await writeAndAddFile(config, "src/Button.tsx", generateDemoButton())
     await writeAndAddFile(config, "src/tests/button.test.tsx", generateButtonTest())
+    await writeAndAddFile(config, "src/Button.stories.tsx", generateButtonStory())
+    await writeAndAddFile(config, "vite.config.ts", generateViteConfig())
+
+    await addScriptToPackage(config, "start", "ladle serve")
 
     await commitWithAuthor(config, "Setup react component")
   }
@@ -109,3 +118,24 @@ it("calls onClick on clicks", () => {
   expect(onClick).toHaveBeenCalledTimes(1)
 })`
 }
+
+const generateButtonStory = () => `import { Button } from "Button"
+
+export const Demo = () => <Button text="TestText" />`
+
+const generateViteConfig = () => `import react from "@vitejs/plugin-react"
+import { defineConfig } from "vite"
+
+export default defineConfig({
+  plugins: [
+    react({
+      jsxImportSource: "@emotion/react",
+    }),
+  ],
+  esbuild: {
+    jsx: "automatic",
+  },
+  optimizeDeps: {
+    include: ["@emotion/react/jsx-dev-runtime"],
+  },
+})`
