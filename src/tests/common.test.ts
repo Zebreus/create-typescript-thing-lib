@@ -158,6 +158,7 @@ describe.each(types)(
         {
           ...options,
           getOriginalPath: true,
+          install: false,
         },
         async originalDir => {
           await runInDirectory(
@@ -165,6 +166,7 @@ describe.each(types)(
               ...options,
               updateFrom: originalDir,
               update: true,
+              install: false,
             },
             async updatedDirectory => {
               const commitBeforeUpdate = await resolveRef({ fs, dir: originalDir, ref: "HEAD" }).catch(() => undefined)
