@@ -27,6 +27,12 @@ export const addPrettier = withStateLogger({ id: "prettier" }, async (config: Co
     useTabs: false,
     vueIndentScriptAndStyle: false,
     plugins: ["prettier-plugin-organize-imports"],
+    overrides: [
+      {
+        files: ["flake.lock"],
+        options: { parser: "json" },
+      },
+    ],
   }
 
   await augmentJsonConfig(config, ".prettierrc.json", prettierRcObject)

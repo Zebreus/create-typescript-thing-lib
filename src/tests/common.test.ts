@@ -36,6 +36,8 @@ describe.each(types)(
       runInDirectory(options, async dir => {
         const file = await loadExistingFile(config(dir), "flake.nix")
         expect(file).toBeTruthy()
+        const lockFile = await loadExistingFile(config(dir), "flake.lock")
+        expect(lockFile).toBeTruthy()
       })
     )
 

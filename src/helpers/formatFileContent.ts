@@ -3,8 +3,18 @@ import { loadExistingFile } from "helpers/loadExistingFile"
 import { writeAndAddFile } from "helpers/writeAndAddFile"
 import { format, getFileInfo } from "prettier"
 
+const addCorrectSuffix = (file: string) => {
+  if (file.endsWith("pre-commit")) {
+    return file + ".sh"
+  }
+  if (file.endsWith("flake.lock")) {
+    return file + ".json"
+  }
+  return file
+}
+
 export const formatFileContent = async (content: string, file: string) => {
-  const transformedFile = file.endsWith("pre-commit") ? file + ".sh" : file
+  const transformedFile = addCorrectSuffix(file)
   const fileInfo = await getFileInfo(transformedFile)
   if (!fileInfo.inferredParser) {
     return content
