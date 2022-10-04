@@ -7,7 +7,6 @@ test.concurrent("creates a git repo", async () =>
     {
       disableGitCommits: false,
       disableGitRepo: false,
-      gitOrigin: undefined,
     },
     async dir => {
       const gitRoot = await findRoot({ fs, filepath: dir })
@@ -24,7 +23,6 @@ test.concurrent("creates no git commits if it is disabled", async () =>
     {
       disableGitCommits: true,
       disableGitRepo: false,
-      gitOrigin: undefined,
     },
     async dir => {
       const gitRoot = await findRoot({ fs, filepath: dir })
