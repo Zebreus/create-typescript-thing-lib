@@ -9,7 +9,7 @@ import { runInDirectory } from "tests/runInDirectory"
 
 const types = ["library", "application", "reactcomponent", "nextjs"] as const
 
-const packageManager = "yarn"
+const packageManager = "npm"
 
 describe.each(types)(
   "common tests for %s",
