@@ -37,6 +37,7 @@ export const addReact = withStateLogger({ id: "react" }, async (config: Config) 
       "react/no-unknown-property": "off",
       "react/prop-types": "off",
     },
+    settings: { react: { version: "detect" } },
   })
 
   await augmentJsonConfig<Tsconfig>(config, "tsconfig.json", {
