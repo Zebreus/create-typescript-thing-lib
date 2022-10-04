@@ -16,3 +16,4 @@ Library to actually create a typescript project. Future backend for
 - [ ] Automatically find default branch if not specified
 - [ ] Make the wizard work offline
 - [x] Add function to merge json files
+- [ ] Adjust runInDirectory to return a Promise instead of using a callback

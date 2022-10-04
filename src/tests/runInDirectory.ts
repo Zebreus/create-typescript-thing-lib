@@ -8,6 +8,10 @@ import { sh } from "sh"
 type TestOptions = Omit<Options, "path"> & {
   /** Run npm (or yarn or pnpm) install */
   install?: boolean
+  /** Return the real path. You should not mutate the contents there, as that will affect other tests */
+  getOriginalPath?: boolean
+  /** Use the contents of this path as the base */
+  updateFrom?: string
 }
 
 const sortAndStringifyObject = <T>(obj: T): string => {
@@ -35,7 +39,7 @@ const sortAndStringifyObject = <T>(obj: T): string => {
 
 const cachedPaths: Record<string, Promise<string>> = {}
 
-const defaultTestOptions: TestOptions = {
+export const defaultTestOptions: TestOptions = {
   name: "testpackage",
   type: "library",
   gitOrigin: "git@github.com:isomorphic-git/test.empty.git",
@@ -47,7 +51,7 @@ const defaultTestOptions: TestOptions = {
 }
 
 export const getPreparedPath = async (partialOptions: Partial<TestOptions>) => {
-  const options = { ...defaultTestOptions, ...partialOptions }
+  const { getOriginalPath, ...options } = { ...defaultTestOptions, ...partialOptions }
   const optionsHash = sortAndStringifyObject(options)
 
   if (!cachedPaths[optionsHash]) {
@@ -71,6 +75,9 @@ export const getPreparedPath = async (partialOptions: Partial<TestOptions>) => {
 
       const dir = await mkdtemp(join(tmpdir(), "cttl-test-"))
       try {
+        if (options.updateFrom) {
+          await cp(options.updateFrom, dir, { recursive: true })
+        }
         await createTypescriptThing({ ...optionsWithoutInstall, path: dir })
         return dir
       } catch (e) {
@@ -82,6 +89,9 @@ export const getPreparedPath = async (partialOptions: Partial<TestOptions>) => {
   }
 
   const templatePath = await cachedPaths[optionsHash]
+  if (getOriginalPath) {
+    return templatePath
+  }
   const dir = await mkdtemp(join(tmpdir(), "cttl-test-"))
   await cp(templatePath, dir, { recursive: true, preserveTimestamps: true })
   return dir
