@@ -4,37 +4,15 @@ import { createTypescriptThing, Options } from "index"
 import { tmpdir } from "os"
 import { join } from "path"
 import { sh } from "sh"
+import { sortAndStringify } from "sortAndStringify"
 
 type TestOptions = Omit<Options, "path"> & {
   /** Run npm (or yarn or pnpm) install */
   install?: boolean
   /** Return the real path. You should not mutate the contents there, as that will affect other tests */
   getOriginalPath?: boolean
-  /** Use the contents of this path as the base */
+  /** Use the contents of this path as the base. Implies `update` */
   updateFrom?: string
-}
-
-const sortAndStringifyObject = <T>(obj: T): string => {
-  if (Array.isArray(obj)) {
-    return "[" + obj.map(sortAndStringifyObject).sort().join(",") + "]"
-  }
-  if (obj === null) {
-    return "null"
-  }
-  if (obj === undefined) {
-    return "undefined"
-  }
-  if (typeof obj === "object") {
-    return (
-      "{" +
-      Object.keys(obj)
-        .sort()
-        .map(key => `${key}: ${sortAndStringifyObject((obj as Record<string, unknown>)[key])}`)
-        .join(",") +
-      "}"
-    )
-  }
-  return JSON.stringify(obj) + ""
 }
 
 const cachedPaths: Record<string, Promise<string>> = {}
@@ -52,7 +30,8 @@ export const defaultTestOptions: TestOptions = {
 
 export const getPreparedPath = async (partialOptions: Partial<TestOptions>) => {
   const { getOriginalPath, ...options } = { ...defaultTestOptions, ...partialOptions }
-  const optionsHash = sortAndStringifyObject(options)
+  options.update = options.update ?? !!options.updateFrom
+  const optionsHash = sortAndStringify(options)
 
   if (!cachedPaths[optionsHash]) {
     const createPreparedPath = async (options: TestOptions) => {

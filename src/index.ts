@@ -1,5 +1,6 @@
-import { ensureGitRepo } from "helpers/ensureGitRepo"
+import { commitUpdate } from "helpers/commitUpdate"
 import { generateConfig } from "helpers/generateConfig"
+import { prepareGitRepo } from "helpers/prepareGitRepo"
 import { prepareTargetDir } from "helpers/prepareTargetDir"
 import { PackageManager } from "install-pnpm-package/dist/detectPackageManager"
 import { addEmotion } from "steps/addEmotion"
@@ -42,6 +43,9 @@ export type Options = {
   gitBranch?: string
 
   logger?: Partial<Logger>
+
+  /** Allow an update, if set to true */
+  update?: boolean
 }
 
 export const createTypescriptThing = async (options: Options) => {
@@ -49,7 +53,7 @@ export const createTypescriptThing = async (options: Options) => {
   const config = await generateConfig(options)
   try {
     await prepareTargetDir(config)
-    await ensureGitRepo(config, gitOrigin, gitBranch)
+    await prepareGitRepo(config, gitOrigin, gitBranch)
     await addNixShell(config)
     await initializeProject(config, name, "0.0.0", description, authorName, authorEmail, "MIT")
     await addTypescript(config)
@@ -80,6 +84,9 @@ export const createTypescriptThing = async (options: Options) => {
     }
     if (type === "nextjs") {
       await setupNextJs(config)
+    }
+    if (config.update) {
+      await commitUpdate(config)
     }
     config.logger.logMessage("Created typescript thing successfully", { type: "success" })
   } catch (e: unknown) {

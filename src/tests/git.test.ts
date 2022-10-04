@@ -7,6 +7,7 @@ test.concurrent("creates a git repo", async () =>
     {
       disableGitCommits: false,
       disableGitRepo: false,
+      gitOrigin: undefined,
     },
     async dir => {
       const gitRoot = await findRoot({ fs, filepath: dir })
@@ -23,6 +24,7 @@ test.concurrent("creates no git commits if it is disabled", async () =>
     {
       disableGitCommits: true,
       disableGitRepo: false,
+      gitOrigin: undefined,
     },
     async dir => {
       const gitRoot = await findRoot({ fs, filepath: dir })
@@ -38,6 +40,7 @@ test.concurrent("fails if git commits are enabled but there is no repo", async (
     getPreparedPath({
       disableGitCommits: false,
       disableGitRepo: true,
+      gitOrigin: undefined,
     })
   ).rejects.toThrow()
 })
@@ -47,6 +50,7 @@ test.concurrent("creates no git repo or commits if both are disabled", async () 
     {
       disableGitCommits: true,
       disableGitRepo: true,
+      gitOrigin: undefined,
     },
     async dir => {
       const gitRoot = await findRoot({ fs, filepath: dir }).catch(() => undefined)

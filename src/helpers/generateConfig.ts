@@ -10,9 +10,12 @@ import { normalize, resolve } from "path"
 export type Config = {
   targetDir: string
   packageManager: PackageManager
+  /** Create git commits */
   gitCommits: boolean
+  /** Create/Configure a git repository. Enables git hooks */
   gitRepo: boolean
   logger: Logger
+  update: boolean
 }
 
 export const generateConfig = async (config: Options): Promise<Config> => {
@@ -25,5 +28,6 @@ export const generateConfig = async (config: Options): Promise<Config> => {
       logMessage: config.logger?.logMessage ?? (() => {}),
       logState: config.logger?.logState ?? (() => {}),
     },
+    update: !!config.update,
   }
 }

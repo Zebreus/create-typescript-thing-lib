@@ -28,11 +28,15 @@ export const addScriptToPackageContent = (packageJsonContent: string, scriptName
 
 export const appendScriptToPackageContent = (packageJsonContent: string, scriptName: string, script: string) => {
   const packageJson = JSON.parse(packageJsonContent)
+  const newScriptParts = [...(packageJson?.scripts?.[scriptName]?.split(" && ") ?? []), ...script.split(" && ")]
+  const uniqueScriptParts = [...new Set(newScriptParts)].filter(v => v)
+  const newScript = uniqueScriptParts.join(" && ")
+
   const newPackage = {
     ...packageJson,
     scripts: {
       ...packageJson.scripts,
-      [scriptName]: [packageJson?.scripts?.[scriptName], script].filter(v => v).join(" && "),
+      [scriptName]: newScript,
     },
   }
   return JSON.stringify(newPackage, null, 2)

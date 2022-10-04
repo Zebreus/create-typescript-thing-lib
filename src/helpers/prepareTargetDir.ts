@@ -18,7 +18,11 @@ export const prepareTargetDir = async (config: Config) => {
     .then(() => true)
     .catch(() => false)
 
-  if (packageJsonAlreadyExists) {
+  if (!config.update && packageJsonAlreadyExists) {
     throw new Error(`Target directory ${config.targetDir} already contains a package.json`)
+  }
+
+  if (config.update && !packageJsonAlreadyExists) {
+    throw new Error(`Target directory ${config.targetDir} does not contain a package.json`)
   }
 }

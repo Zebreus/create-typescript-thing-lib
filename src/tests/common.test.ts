@@ -23,6 +23,7 @@ describe.each(types)(
         logMessage: () => {},
         logState: () => {},
       },
+      update: false,
     })
 
     const options = {
@@ -149,6 +150,33 @@ describe.each(types)(
         expect(commitInfo.commit.author.name).toBe("Zebreus")
       })
     )
+
+    test.concurrent("Updating does not change anything", async () => {
+      await runInDirectory(
+        {
+          ...options,
+          getOriginalPath: true,
+        },
+        async originalDir => {
+          await runInDirectory(
+            {
+              ...options,
+              updateFrom: originalDir,
+              update: true,
+            },
+            async updatedDirectory => {
+              const commitBeforeUpdate = await resolveRef({ fs, dir: originalDir, ref: "HEAD" }).catch(() => undefined)
+              const commitAfterUpdate = await resolveRef({ fs, dir: updatedDirectory, ref: "HEAD" }).catch(
+                () => undefined
+              )
+              expect(commitBeforeUpdate).toBeDefined()
+              expect(commitAfterUpdate).toBeDefined()
+              expect(commitBeforeUpdate).toBe(commitAfterUpdate)
+            }
+          )
+        }
+      )
+    })
 
     if (type === "application") {
       test.concurrent("can launch the cli application", async () =>

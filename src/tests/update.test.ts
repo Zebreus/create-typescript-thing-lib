@@ -1,40 +1,16 @@
 import fs from "fs"
+import { addPackageJsonToGit } from "helpers/addPackageJsonToGit"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
-import { augmentJsonConfig } from "helpers/modifyJsonFile"
-import { resolveRef } from "isomorphic-git"
+import { addPackageNpm } from "install-pnpm-package"
+import { readCommit, resolveRef } from "isomorphic-git"
 import { runInDirectory } from "tests/runInDirectory"
 
 describe("Tests for updating repos", () => {
-  test.concurrent("Updating does not change anything", async () => {
+  test.concurrent("Updating creates an update commit", async () => {
     await runInDirectory(
       {
         type: "library",
-        getOriginalPath: true,
-      },
-      async originalDir => {
-        await runInDirectory(
-          {
-            type: "library",
-            updateFrom: originalDir,
-          },
-          async updatedDirectory => {
-            const commitBeforeUpdate = await resolveRef({ fs, dir: originalDir, ref: "HEAD" }).catch(() => undefined)
-            const commitAfterUpdate = await resolveRef({ fs, dir: updatedDirectory, ref: "HEAD" }).catch(
-              () => undefined
-            )
-            expect(commitBeforeUpdate).toBeDefined()
-            expect(commitAfterUpdate).toBeDefined()
-            expect(commitBeforeUpdate).toBe(commitAfterUpdate)
-          }
-        )
-      }
-    )
-  })
-
-  test.concurrent("Updating does update the version", async () => {
-    await runInDirectory(
-      {
-        type: "library",
+        packageManager: "npm",
       },
       async source => {
         const dummyConfig = {
@@ -46,23 +22,39 @@ describe("Tests for updating repos", () => {
             logMessage: () => {},
             logState: () => {},
           },
+          update: true,
         } as const
-        await augmentJsonConfig(dummyConfig, "package.json", { devDependencies: { eslint: "0.0.0" } })
-        await commitWithAuthor(dummyConfig, "Downgrade eslint")
+        const commitBeforeChange = await resolveRef({ fs, dir: source, ref: "HEAD" }).catch(() => undefined)
+        expect(commitBeforeChange).toBeDefined()
+
+        await addPackageNpm(["typescript@2"], {
+          directory: source,
+          type: "dev",
+        })
+        await addPackageJsonToGit(dummyConfig)
+        await commitWithAuthor({ ...dummyConfig, update: false }, "Downgrade typescript")
+        const commitAfterChange = await resolveRef({ fs, dir: source, ref: "HEAD" }).catch(() => undefined)
+        expect(commitAfterChange).not.toBe(commitBeforeChange)
 
         await runInDirectory(
           {
             type: "library",
+            packageManager: "npm",
             updateFrom: source,
           },
           async updatedDirectory => {
-            const commitBeforeUpdate = await resolveRef({ fs, dir: source, ref: "HEAD" }).catch(() => undefined)
-            const commitAfterUpdate = await resolveRef({ fs, dir: updatedDirectory, ref: "HEAD" }).catch(
-              () => undefined
-            )
-            expect(commitBeforeUpdate).toBeDefined()
-            expect(commitAfterUpdate).toBeDefined()
-            expect(commitBeforeUpdate).not.toBe(commitAfterUpdate)
+            const commitAfterUpdate = await resolveRef({ fs, dir: updatedDirectory, ref: "HEAD" }).catch(() => "")
+            expect(commitAfterUpdate).toBeTruthy()
+            expect(commitAfterUpdate).not.toBe(commitBeforeChange)
+            expect(commitAfterUpdate).not.toBe(commitAfterChange)
+
+            const commitOneBeforeUpdate = await (
+              await readCommit({ fs, dir: updatedDirectory, oid: commitAfterUpdate })
+            ).commit.parent[0]
+            const commitTwoBeforeUpdate = await (
+              await readCommit({ fs, dir: updatedDirectory, oid: commitOneBeforeUpdate })
+            ).commit.parent[0]
+            expect(commitTwoBeforeUpdate).toBe(commitBeforeChange)
           }
         )
       }
