@@ -1,4 +1,4 @@
-import { addScriptToPackage } from "helpers/addScriptToPackage"
+import { appendScriptToPackage } from "helpers/addScriptToPackage"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
@@ -20,9 +20,9 @@ export const addHusky = withStateLogger(
       { executable: true }
     )
 
-    await addScriptToPackage(config, "postinstall", "husky install")
-    await addScriptToPackage(config, "prepack", "pinst --disable")
-    await addScriptToPackage(config, "postpack", "pinst --enable")
+    await appendScriptToPackage(config, "postinstall", "husky install")
+    await appendScriptToPackage(config, "prepack", "pinst --disable")
+    await appendScriptToPackage(config, "postpack", "pinst --enable")
 
     await commitWithAuthor(config, "Install husky and enable pre-commmit hook")
   }
