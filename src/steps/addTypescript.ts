@@ -28,7 +28,7 @@ export const addTypescript = withStateLogger({ id: "TypeScript" }, async (config
       skipLibCheck: true,
       allowUnusedLabels: false,
       allowUnreachableCode: false,
-      exactOptionalPropertyTypes: true,
+      exactOptionalPropertyTypes: false,
       noFallthroughCasesInSwitch: true,
       noPropertyAccessFromIndexSignature: true,
       noUncheckedIndexedAccess: true,
