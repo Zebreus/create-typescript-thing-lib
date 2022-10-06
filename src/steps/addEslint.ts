@@ -20,9 +20,9 @@ export const addEslint = withStateLogger({ id: "eslint" }, async (config: Config
     extends: ["eslint:recommended", "plugin:import/recommended", "plugin:jest/recommended"],
     plugins: ["import"],
     rules: {
-      "no-undef": "off",
+      "no-undef": "error",
       "no-unused-vars": [
-        "off",
+        "error",
         {
           ignoreRestSiblings: true,
         },
@@ -103,6 +103,8 @@ export const addEslint = withStateLogger({ id: "eslint" }, async (config: Config
         ],
         plugins: ["import", "@typescript-eslint"],
         rules: {
+          "no-undef": "off",
+          "no-unused-vars": "off",
           "@typescript-eslint/explicit-module-boundary-types": "off",
           "@typescript-eslint/no-unused-vars": [
             "error",
