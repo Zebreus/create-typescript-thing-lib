@@ -1,4 +1,5 @@
 import { addScriptToPackage } from "helpers/addScriptToPackage"
+import { addToGitIgnore } from "helpers/addToGitIgnore"
 import { commitWithAuthor } from "helpers/commitWithAuthor"
 import { Config } from "helpers/generateConfig"
 import { installPackage } from "helpers/installPackage"
@@ -26,6 +27,19 @@ export const setupReactComponent = withStateLogger(
       },
     })
 
+    await augmentJsonConfig(config, ".vscode/launch.json", {
+      version: "0.2.0",
+      configurations: [
+        {
+          type: "chrome",
+          request: "launch",
+          name: "Attach to ladle server",
+          url: "http://localhost:61000",
+          webRoot: "${workspaceFolder}",
+        },
+      ],
+    })
+
     await augmentJsonConfig<Tsconfig>(config, "tsconfig.build.json", {
       exclude: ["**/*.stories.tsx?"],
     })
@@ -41,6 +55,8 @@ export const setupReactComponent = withStateLogger(
     await writeAndAddFile(config, "src/tests/button.test.tsx", generateButtonTest())
     await writeAndAddFile(config, "src/Button.stories.tsx", generateButtonStory())
     await writeAndAddFile(config, "vite.config.ts", generateViteConfig())
+
+    await addToGitIgnore(config, "ladle", "/build")
 
     await addScriptToPackage(config, "start", "ladle serve")
 
