@@ -31,7 +31,7 @@ export const addTypescript = withStateLogger({ id: "TypeScript" }, async (config
       exactOptionalPropertyTypes: false,
       noFallthroughCasesInSwitch: true,
       noPropertyAccessFromIndexSignature: true,
-      noUncheckedIndexedAccess: true,
+      noUncheckedIndexedAccess: false,
       resolveJsonModule: true,
       rootDir: "src",
       baseUrl: ".",
