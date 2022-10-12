@@ -6,14 +6,14 @@ import { writeAndAddFile } from "helpers/writeAndAddFile"
 
 export const addNixShell = withStateLogger(
   { id: "nix shell", message: "Adding nix shell", completed: "Added nix shell" },
-  async (config: Config) => {
-    await writeAndAddFile(config, "flake.nix", generateNixFlake(config))
+  async (config: Config, name: string) => {
+    await writeAndAddFile(config, "flake.nix", generateNixFlake(config, name))
     await createJsonConfig(config, "flake.lock", generateFlakeLock())
     await commitWithAuthor(config, "Add nix shell")
   }
 )
 
-const generateNixFlake = (config: Config) => {
+const generateNixFlake = (config: Config, name: string) => {
   return `{
   inputs = {
     nixpkgs.url =
@@ -25,7 +25,7 @@ const generateNixFlake = (config: Config) => {
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.simpleFlake {
       inherit self nixpkgs;
-      name = "Package name";
+      name = "${name}";
       shell = { pkgs }:
         pkgs.mkShell {
           buildInputs = with pkgs; [ nodejs ${
